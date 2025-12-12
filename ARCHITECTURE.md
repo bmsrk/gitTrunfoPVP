@@ -208,8 +208,7 @@ Automatic deployment via GitHub Actions on push to `main`:
 1. **Authentication**: GitHub OAuth for higher API limits
 2. **Deck Themes**: Stack-based decks (Python, JavaScript, etc.)
 3. **Persistent Stats**: Track win/loss records
-4. **Tournaments**: Multi-player bracket system
-5. **Custom Decks**: User-curated card collections
-6. **Replay System**: Save and replay battles
-7. **Sound Toggle**: User preference for audio
-8. **Accessibility**: ARIA labels, keyboard navigation
+4. **Custom Decks**: User-curated card collections
+5. **Replay System**: Save and replay battles
+6. **Sound Toggle**: User preference for audio
+7. **Accessibility**: ARIA labels, keyboard navigation

@@ -30,7 +30,6 @@
 
 - 🎮 **Game Modes**:
   - **Casual Mode**: Quick matches for fun
-  - **Tournament Mode**: Competitive MTG-style play (coming soon)
 
 - 👥 **Play Options**:
   - **Single Player**: Battle against AI opponent
@@ -73,11 +72,10 @@ npm run build
 
 ## 🎯 How to Play
 
-1. **Select Game Mode**: Choose between Casual or Tournament mode
-2. **Pick Your Deck**: Select a stack-based deck (Web, Legacy, Esoteric, or Standard)
-3. **Start Playing**: Choose Single Player (vs CPU) or Multiplayer (P2P)
-4. **Battle**: Select the stat where your card has the highest value
-5. **Win**: Collect all your opponent's cards to achieve victory!
+1. **Pick Your Deck**: Select a stack-based deck (Web, Legacy, Esoteric, or Standard)
+2. **Start Playing**: Choose Single Player (vs CPU) or Multiplayer (P2P)
+3. **Battle**: Select the stat where your card has the highest value
+4. **Win**: Collect all your opponent's cards to achieve victory!
 
 For detailed gameplay instructions, see [GAMEPLAY.md](GAMEPLAY.md).
 
@@ -141,7 +139,6 @@ This project is open source and available under the MIT License.
 
 ## 🗺️ Roadmap
 
-- [ ] Tournament bracket system implementation
 - [ ] User authentication for higher API limits
 - [ ] Custom deck creation
 - [ ] Persistent stats and leaderboards

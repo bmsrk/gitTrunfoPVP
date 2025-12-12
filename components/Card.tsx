@@ -147,14 +147,14 @@ const Card: React.FC<CardProps> = ({ data, hidden, onSelectStat, disabled, isWin
     }
   };
 
-  // 3D tilt effect for all cards on mouse move
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+  // 3D tilt effect for all cards on pointer/mouse move
+  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement> | React.MouseEvent<HTMLDivElement>) => {
     if (disabled || isWinner || isLoser || !cardRef.current || hidden) return;
     
     const card = cardRef.current;
     const rect = card.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+    const x = ('clientX' in e) ? (e as any).clientX - rect.left : 0;
+    const y = ('clientY' in e) ? (e as any).clientY - rect.top : 0;
     
     const centerX = rect.width / 2;
     const centerY = rect.height / 2;
@@ -168,7 +168,7 @@ const Card: React.FC<CardProps> = ({ data, hidden, onSelectStat, disabled, isWin
     card.style.setProperty('--rotate-y', `${rotateX}deg`);
   };
 
-  const handleMouseLeave = () => {
+  const handlePointerLeave = () => {
     if (!cardRef.current) return;
     
     const card = cardRef.current;
@@ -180,8 +180,11 @@ const Card: React.FC<CardProps> = ({ data, hidden, onSelectStat, disabled, isWin
     <div 
       ref={cardRef}
       onPointerEnter={handleMouseEnter}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
+      onPointerMove={handlePointerMove}
+      onMouseMove={handlePointerMove}
+      onPointerLeave={handlePointerLeave}
+      onMouseLeave={handlePointerLeave}
+      style={{ ['--rotate-x' as any]: '0deg', ['--rotate-y' as any]: '0deg' }}
       className={`${containerClasses} ${isFoilCard && !hidden ? 'foil-card' : ''}`}
     >
       {/* FOIL BADGE for rare cards */}

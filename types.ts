@@ -45,13 +45,7 @@ export type StatType =
   | 'influenceScore' 
   | 'activityScore' 
   | 'techBreadth'
-  | 'impactScore'
-  // Keep old stats for backward compatibility during migration
-  | 'public_repos' 
-  | 'followers' 
-  | 'following' 
-  | 'public_gists' 
-  | 'seniority';
+  | 'impactScore';
 
 export type DeckType = 'Standard' | 'Web' | 'LegacyLanguages' | 'Esoteric' | 'Corporate';
 
@@ -82,7 +76,6 @@ export interface BattleLogEvent {
 export interface GameState {
   status: 'LOBBY' | 'DECK_SELECT' | 'CONNECTING' | 'PLAYING' | 'GAME_OVER';
   mode: 'SINGLE' | 'HOST' | 'CLIENT';
-  gameMode: 'CASUAL' | 'TOURNAMENT';
   selectedDeck: DeckType | null;
   myDeck: CardData[];
   opponentDeckCount: number;
@@ -96,10 +89,8 @@ export interface GameState {
   peerId: string | null;
   opponentPeerId: string | null;
   aiCommentary: string | null;
-  // Tournament mode
-  tournamentRound: number;
-  tournamentWins: number;
-  tournamentLosses: number;
+  cpuDeck?: CardData[];
+  cpuCurrentCard?: CardData | null;
 }
 
 export interface PeerMessage {
