@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GitTrunfo P2P</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Silkscreen&family=VT323&family=Press+Start+2P&display=swap" rel="stylesheet">
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              pixel: ['"Silkscreen"', 'cursive'],
+              retro: ['"VT323"', 'monospace'],
+              snes: ['"Press Start 2P"', 'cursive'],
+            },
+            colors: {
+              theme: {
+                bg: 'var(--bg)',
+                panel: 'var(--panel)',
+                border: 'var(--border)',
+                text: 'var(--text)',
+                muted: 'var(--muted)',
+                primary: 'var(--primary)',
+                secondary: 'var(--secondary)',
+                danger: 'var(--danger)',
+                success: 'var(--success)',
+                accent: 'var(--accent)',
+              }
+            },
+            borderRadius: {
+              'theme': 'var(--radius)',
+            },
+            boxShadow: {
+              'theme': 'var(--shadow)',
+              'glow': 'var(--glow)',
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      :root {
+        /* Default: Cyberpunk / 32-bit Terminal */
+        --bg: #0d1117;
+        --panel: #161b22;
+        --border: #30363d;
+        --text: #c9d1d9;
+        --muted: #8b949e;
+        --primary: #58a6ff;
+        --secondary: #238636;
+        --danger: #da3633;
+        --success: #3fb950;
+        --accent: #d2a8ff;
+        --radius: 0px;
+        --shadow: 4px 4px 0px 0px rgba(0,0,0,0.8);
+        --glow: 0 0 10px rgba(88, 166, 255, 0.3);
+        --text-glow: 0 0 5px var(--primary), 0 0 15px var(--primary);
+        --scrollbar-track: var(--bg);
+        --scrollbar-thumb: var(--border);
+        --scrollbar-thumb-hover: var(--primary);
+      }
+
+      [data-theme='snes'] {
+        /* SNES / 16-bit RPG Style */
+        --bg: #2d2042;
+        --panel: #4a4175;
+        --border: #d1c4e9;
+        --text: #ffffff;
+        --muted: #b39ddb;
+        --primary: #fbbf24;
+        --secondary: #34d399;
+        --danger: #f87171;
+        --success: #4ade80;
+        --accent: #f472b6;
+        --radius: 6px;
+        --shadow: 0px 6px 0px 0px #1e152e;
+        --glow: 0 0 15px rgba(251, 191, 36, 0.5);
+        --text-glow: 0 0 5px var(--primary), 0 0 10px var(--primary);
+        --scrollbar-track: #201730;
+        --scrollbar-thumb: #4a4175;
+        --scrollbar-thumb-hover: #fbbf24;
+      }
+
+      [data-theme='dreamcast'] {
+        /* Clean / Orange Spiral */
+        --bg: #e0e0e0;
+        --panel: #ffffff;
+        --border: #b0b0b0;
+        --text: #333333;
+        --muted: #777777;
+        --primary: #ff5500;
+        --secondary: #0077ff;
+        --danger: #e60000;
+        --success: #00cc00;
+        --accent: #ff5500;
+        --radius: 12px;
+        --shadow: 4px 4px 10px rgba(0,0,0,0.1);
+        --glow: 0 0 10px rgba(255, 85, 0, 0.2);
+        --text-glow: none;
+        --scrollbar-track: #d0d0d0;
+        --scrollbar-thumb: #b0b0b0;
+        --scrollbar-thumb-hover: #ff5500;
+      }
+
+      [data-theme='n64'] {
+        /* Dark / 3D / Primary Colors */
+        --bg: #1a1a1a;
+        --panel: #333333;
+        --border: #000000;
+        --text: #e0e0e0;
+        --muted: #888888;
+        --primary: #fcd116; /* C-Yellow */
+        --secondary: #009bf6; /* C-Blue */
+        --danger: #da251d; /* C-Red */
+        --success: #35a133; /* C-Green */
+        --accent: #fcd116;
+        --radius: 4px;
+        --shadow: 6px 6px 0px #000;
+        --glow: 0 0 0px transparent;
+        --text-glow: 0 0 5px var(--primary);
+        --scrollbar-track: #111;
+        --scrollbar-thumb: #444;
+        --scrollbar-thumb-hover: #fcd116;
+      }
+
+      [data-theme='psx'] {
+        /* High Contrast BIOS Blue */
+        --bg: #000000;
+        --panel: #1a237e; /* BIOS Deep Blue */
+        --border: #ffffff;
+        --text: #e8eaf6; /* White/Grey */
+        --muted: #7986cb;
+        --primary: #448aff; /* Selection Blue */
+        --secondary: #ff1744; 
+        --danger: #ff5252;
+        --success: #69f0ae;
+        --accent: #ffd740;
+        --radius: 1px;
+        --shadow: 4px 4px 0px rgba(255,255,255,0.2);
+        --glow: 0 0 15px rgba(68, 138, 255, 0.4);
+        --text-glow: 0 0 2px #000000;
+        --scrollbar-track: #000000;
+        --scrollbar-thumb: #1a237e;
+        --scrollbar-thumb-hover: #448aff;
+      }
+
+      [data-theme='xbox'] {
+        /* Neon Green / Black */
+        --bg: #050505;
+        --panel: #121212;
+        --border: #202020;
+        --text: #e0ffe0;
+        --muted: #4a664a;
+        --primary: #39ff14; /* Vibrant Neon Green */
+        --secondary: #107c10; /* Classic Green */
+        --danger: #ff3333;
+        --success: #39ff14;
+        --accent: #b4ff00;
+        --radius: 10px;
+        --shadow: 0px 0px 15px rgba(57, 255, 20, 0.15);
+        --glow: 0 0 20px rgba(57, 255, 20, 0.6);
+        --text-glow: 0 0 8px var(--primary), 0 0 15px var(--primary);
+        --scrollbar-track: #000;
+        --scrollbar-thumb: #107c10;
+        --scrollbar-thumb-hover: #39ff14;
+      }
+      
+      [data-theme='pc98'] {
+        /* PC-9801 / NEC Retro Style (High Contrast) */
+        --bg: #000000;
+        --panel: #000033; /* Deep Blue Panel */
+        --border: #9999cc; /* Periwinkle/Grey for box lines (High Contrast) */
+        --text: #ffffff; /* Pure White */
+        --muted: #aaaacc; /* Readable light blue-grey */
+        --primary: #00ffff; /* Classic Cyan */
+        --secondary: #ff00ff; /* Magenta */
+        --danger: #ff3333;
+        --success: #00ff00;
+        --accent: #ffff00;
+        --radius: 0px;
+        --shadow: 4px 4px 0px #000; /* Hard shadow */
+        --glow: none;
+        --text-glow: 1px 1px 0px #000088; /* Blue shadow for text readability */
+        --scrollbar-track: #000022;
+        --scrollbar-thumb: #9999cc;
+        --scrollbar-thumb-hover: #00ffff;
+      }
+
+      [data-theme='winxp'] {
+        /* Windows XP Luna Style */
+        --bg: #ffffff; 
+        --panel: #ffffff;
+        --border: #0054e3; /* XP Blue Border */
+        --text: #000000;
+        --muted: #444444;
+        --primary: #388e3c; /* Darker Green for better white text contrast */
+        --secondary: #e66c00;
+        --danger: #d13438;
+        --success: #388e3c;
+        --accent: #f27d0c; /* Orange highlight */
+        --radius: 8px 8px 0 0; /* XP Windows style rounded top */
+        --shadow: 2px 2px 5px rgba(0,0,0,0.4);
+        --glow: 0 0 2px rgba(255, 255, 255, 0.5);
+        --text-glow: none;
+        --scrollbar-track: #f1f1f1;
+        --scrollbar-thumb: #245dda;
+        --scrollbar-thumb-hover: #1a46a0;
+      }
+
+      body {
+        background-color: var(--bg);
+        color: var(--text);
+        image-rendering: pixelated;
+        transition: background-color 0.3s ease, color 0.3s ease;
+      }
+      
+      /* Scanlines - only for Cyberpunk really, but looks cool on both */
+      .scanlines::before {
+        content: " ";
+        display: block;
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%),
+                    linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+        z-index: 50;
+        background-size: 100% 2px, 3px 100%;
+        pointer-events: none;
+      }
+
+      /* Hide scanlines on cleaner themes */
+      [data-theme='dreamcast'] .scanlines::before,
+      [data-theme='psx'] .scanlines::before,
+      [data-theme='winxp'] .scanlines::before,
+      [data-theme='pc98'] .scanlines::before {
+        display: none;
+      }
+
+      .text-glow {
+        text-shadow: var(--text-glow);
+      }
+      
+      .text-glow-danger {
+        text-shadow: 0 0 5px var(--danger), 0 0 15px var(--danger);
+      }
+      
+      .box-glow {
+        box-shadow: 0 0 10px var(--primary), inset 0 0 5px var(--primary);
+      }
+
+      /* SNES Gradient Background Overlay */
+      [data-theme='snes'] {
+        background-image: radial-gradient(circle at 50% 50%, #382d55 0%, #201730 100%);
+      }
+      
+      /* Xbox Grid */
+      [data-theme='xbox'] {
+        background-image: 
+          radial-gradient(circle at 50% 0%, rgba(57, 255, 20, 0.15) 0%, transparent 60%),
+          linear-gradient(rgba(57, 255, 20, 0.05) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(57, 255, 20, 0.05) 1px, transparent 1px);
+        background-size: 100% 100%, 40px 40px, 40px 40px;
+      }
+      
+      /* PC-98 Cross-hatch Grid */
+      [data-theme='pc98'] {
+        background-color: #000010;
+        /* Subtle blue grid to simulate 640x400 display texture */
+        background-image: 
+            linear-gradient(rgba(0, 50, 150, 0.15) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(0, 50, 150, 0.15) 1px, transparent 1px);
+        background-size: 4px 4px;
+      }
+
+      /* WinXP Bliss Wallpaper approximation */
+      [data-theme='winxp'] {
+        background-color: #55aaff !important; /* Force blue even though --bg is white */
+        background-image: 
+           radial-gradient(farthest-side at 50% 115%, #81c045 20%, #4a9010 80%, transparent 100%), /* Hill */
+           linear-gradient(to bottom, #2466d3 0%, #4da7ed 40%, #88c9f8 60%, #fff 100%); /* Sky */
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-size: 100% 45%, 100% 100%;
+        background-position: bottom center, top center;
+      }
+
+      /* WinXP Text Overrides for contrast on Wallpaper */
+      [data-theme='winxp'] h1, 
+      [data-theme='winxp'] .text-glow {
+        color: #ffffff;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+      }
+      /* Ensure subtitle is readable on sky */
+      [data-theme='winxp'] p.text-theme-muted {
+         color: #ffffff !important;
+         text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+         opacity: 0.9;
+      }
+
+      /* PSX Background Grid (BIOS) */
+      [data-theme='psx'] {
+        background-image: linear-gradient(#001540 1px, transparent 1px), linear-gradient(90deg, #001540 1px, transparent 1px);
+        background-size: 40px 40px;
+        background-position: center center;
+      }
+
+      /* Custom Scrollbar for Theme Consistency */
+      ::-webkit-scrollbar {
+        width: 12px;
+        height: 12px;
+      }
+      ::-webkit-scrollbar-track {
+        background: var(--scrollbar-track);
+      }
+      ::-webkit-scrollbar-thumb {
+        background: var(--scrollbar-thumb);
+        border: 2px solid var(--scrollbar-track);
+        border-radius: var(--radius);
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: var(--scrollbar-thumb-hover);
+      }
+
+      @keyframes glow-pulse {
+        0%, 100% { box-shadow: 0 0 5px var(--success), 0 0 10px var(--success); }
+        50% { box-shadow: 0 0 20px var(--success), 0 0 30px var(--success); }
+      }
+      
+      .animate-glow-pulse {
+        animation: glow-pulse 2s infinite;
+      }
+
+      @keyframes card-enter {
+        0% {
+          opacity: 0;
+          transform: translateY(20px) scale(0.95);
+          filter: brightness(2);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+          filter: brightness(1);
+        }
+      }
+      
+      .animate-card-enter {
+        animation: card-enter 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+      }
+
+      @keyframes card-reveal {
+        0% { transform: perspective(1000px) rotateY(90deg); opacity: 1; }
+        100% { transform: perspective(1000px) rotateY(0deg); opacity: 1; }
+      }
+      
+      .animate-card-reveal {
+        animation: card-reveal 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+      }
+
+      @keyframes scan-line {
+        0% { top: 0%; opacity: 0; }
+        15% { opacity: 1; }
+        85% { opacity: 1; }
+        100% { top: 100%; opacity: 0; }
+      }
+      
+      .animate-scan-line {
+        animation: scan-line 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react/": "https://esm.sh/react@^19.2.1/",
+    "react": "https://esm.sh/react@^19.2.1",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.1/",
+    "lucide-react": "https://esm.sh/lucide-react@^0.560.0",
+    "peerjs": "https://esm.sh/peerjs@^1.5.5",
+    "canvas-confetti": "https://esm.sh/canvas-confetti@^1.9.4"
+  }
+}
+</script>
+</head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>

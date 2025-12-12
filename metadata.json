@@ -1,0 +1,5 @@
+{
+  "name": "GitTrunfo P2P",
+  "description": "A browser-based multiplayer card game battling with GitHub profiles. Features real-time P2P gameplay via WebRTC.",
+  "requestFramePermissions": []
+}
