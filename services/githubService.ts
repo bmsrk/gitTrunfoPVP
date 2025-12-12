@@ -86,11 +86,11 @@ export const DECK_CONFIGS: Record<DeckType, DeckConfig> = {
 // Future enhancement: implement calculateWeightedScore() using these multipliers
 export const getDeckWeights = (deckType: DeckType) => {
   const weights = {
-    Standard: { followersScore: 1.0, repositoriesScore: 1.0, influenceScore: 1.0, activityScore: 1.0, techBreadth: 1.0 },
-    Web: { followersScore: 0.9, repositoriesScore: 1.0, influenceScore: 1.0, activityScore: 1.3, techBreadth: 1.2 },
-    LegacyLanguages: { followersScore: 0.8, repositoriesScore: 1.2, influenceScore: 1.0, activityScore: 0.8, techBreadth: 0.9 },
-    Esoteric: { followersScore: 0.9, repositoriesScore: 1.0, influenceScore: 1.3, activityScore: 1.0, techBreadth: 1.4 },
-    Corporate: { followersScore: 1.5, repositoriesScore: 0.8, influenceScore: 1.4, activityScore: 0.9, techBreadth: 1.1 }
+    Standard: { followersScore: 1.0, repositoriesScore: 1.0, influenceScore: 1.0, activityScore: 1.0, techBreadth: 1.0, impactScore: 1.0 },
+    Web: { followersScore: 0.9, repositoriesScore: 1.0, influenceScore: 1.0, activityScore: 1.3, techBreadth: 1.2, impactScore: 1.1 },
+    LegacyLanguages: { followersScore: 0.8, repositoriesScore: 1.2, influenceScore: 1.0, activityScore: 0.8, techBreadth: 0.9, impactScore: 1.3 },
+    Esoteric: { followersScore: 0.9, repositoriesScore: 1.0, influenceScore: 1.3, activityScore: 1.0, techBreadth: 1.4, impactScore: 1.2 },
+    Corporate: { followersScore: 1.5, repositoriesScore: 0.8, influenceScore: 1.4, activityScore: 0.9, techBreadth: 1.1, impactScore: 1.3 }
   };
   return weights[deckType] || weights.Standard;
 };
@@ -296,12 +296,30 @@ const calculateStrategicAttributes = (user: GithubUser, repoStats: GitHubRepoSta
   // 5. Tech Breadth (language diversity)
   const techBreadth = normalizeLinear(languageStats.languageCount, NORMALIZATION_RANGES.languages.min, NORMALIZATION_RANGES.languages.max);
   
+  // 6. Impact Score (community engagement + longevity + efficiency)
+  const accountAge = Math.floor((Date.now() - new Date(user.created_at).getTime()) / (1000 * 60 * 60 * 24 * 365));
+  const longevityScore = Math.min(100, (accountAge / 10) * 100); // Max at 10 years
+  const gistsScore = normalizeLinear(user.public_gists, 0, 100); // Knowledge sharing
+  const followerEfficiency = user.public_repos > 0 ? (user.followers / user.public_repos) : 0;
+  const efficiencyScore = normalizeLogScale(followerEfficiency, 0, 50); // Followers per repo
+  const followingRatio = user.followers > 0 ? Math.min(100, (user.following / user.followers) * 100) : 0;
+  const engagementBonus = followingRatio > 10 && followingRatio < 80 ? 20 : 0; // Active community participant
+  
+  const impactScore = Math.min(100, 
+    (longevityScore * 0.3) + 
+    (gistsScore * 0.2) + 
+    (efficiencyScore * 0.3) + 
+    (engagementBonus * 1.0) +
+    (activityScore * 0.2) // Bonus for being active
+  );
+  
   return {
     followersScore: Math.round(followersScore),
     repositoriesScore: Math.round(repositoriesScore),
     influenceScore: Math.round(influenceScore),
     activityScore: Math.round(activityScore),
-    techBreadth: Math.round(techBreadth)
+    techBreadth: Math.round(techBreadth),
+    impactScore: Math.round(impactScore)
   };
 };
 

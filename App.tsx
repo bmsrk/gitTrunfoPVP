@@ -499,7 +499,7 @@ const App: React.FC = () => {
        const timer = setTimeout(() => {
            const cpuCard = (window as any).cpuCurrentCard as CardData;
            if(!cpuCard) return;
-           const stats: StatType[] = ['followersScore', 'repositoriesScore', 'influenceScore', 'activityScore', 'techBreadth'];
+           const stats: StatType[] = ['followersScore', 'repositoriesScore', 'influenceScore', 'activityScore', 'techBreadth', 'impactScore'];
            const randomStat = stats[Math.floor(Math.random() * stats.length)];
            const myCard = stateRef.current.currentMyCard!;
            processTurnResult(randomStat, myCard, cpuCard, 'THEM');
@@ -547,13 +547,14 @@ const App: React.FC = () => {
                    </div>
                    <div>
                       <h3 className="font-pixel text-theme-text text-sm mb-1">1. STRATEGIC ATTRIBUTES</h3>
-                      <p>Each card has 5 normalized attributes (0-100 scale):</p>
+                      <p>Each card has 6 normalized attributes (0-100 scale):</p>
                       <ul className="text-sm md:text-base mt-2 space-y-1 list-disc list-inside">
                         <li><strong>Followers:</strong> Community influence</li>
                         <li><strong>Repos:</strong> Project portfolio size</li>
                         <li><strong>Influence:</strong> Stars + forks aggregate</li>
                         <li><strong>Activity:</strong> Recent commits + recency</li>
                         <li><strong>Tech Breadth:</strong> Language diversity</li>
+                        <li><strong>Impact:</strong> Longevity + engagement + efficiency</li>
                       </ul>
                    </div>
                 </div>
@@ -577,7 +578,7 @@ const App: React.FC = () => {
                 </div>
                 <div className="bg-theme-bg/50 p-3 rounded-theme border-2 border-theme-border">
                    <p className="text-sm md:text-base">
-                      <span className="text-theme-primary">TIP:</span> Different decks favor different attributes! Corporate decks excel at Followers, Web decks at Activity, and Esoteric decks at Tech Breadth.
+                      <span className="text-theme-primary">TIP:</span> Different decks favor different attributes! Corporate decks excel at Followers and Impact, Web decks at Activity, and Esoteric decks at Tech Breadth.
                    </p>
                 </div>
              </div>

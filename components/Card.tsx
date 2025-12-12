@@ -1,6 +1,6 @@
 import React from 'react';
 import { CardData, StatType } from '../types';
-import { Zap, Star, TrendingUp, Activity, Grid, ArrowDown, Loader2 } from 'lucide-react';
+import { Zap, Star, TrendingUp, Activity, Grid, ArrowDown, Loader2, Target } from 'lucide-react';
 import { soundManager } from '../services/soundService';
 
 interface CardProps {
@@ -85,7 +85,7 @@ const Card: React.FC<CardProps> = ({ data, hidden, onSelectStat, disabled, isWin
     );
   }
 
-  // Updated stats with new strategic attributes
+  // Updated stats with new strategic attributes (6 stats total)
   const stats: { id: StatType; label: string; icon: React.ReactNode; value: number; rawValue?: string }[] = [
     { 
       id: 'followersScore', 
@@ -121,6 +121,13 @@ const Card: React.FC<CardProps> = ({ data, hidden, onSelectStat, disabled, isWin
       icon: <Grid className="w-3 h-3 md:w-4 md:h-4 2xl:w-6 2xl:h-6" />, 
       value: data.techBreadth,
       rawValue: data.languageStats ? `${data.languageStats.languageCount} langs` : undefined
+    },
+    { 
+      id: 'impactScore', 
+      label: 'IMPACT', 
+      icon: <Target className="w-3 h-3 md:w-4 md:h-4 2xl:w-6 2xl:h-6" />, 
+      value: data.impactScore,
+      rawValue: `${data.seniority}y exp, ${data.public_gists} gists`
     },
   ];
 
@@ -176,7 +183,7 @@ const Card: React.FC<CardProps> = ({ data, hidden, onSelectStat, disabled, isWin
           <span>{data.created_at.substring(0,4)}</span>
         </div>
         
-        <div className="flex-1 grid grid-cols-2 gap-2 content-start pb-1">
+        <div className="flex-1 grid grid-cols-3 gap-2 content-start pb-1">
           {stats.map((stat, index) => {
              const isStatHighlighted = highlightStat === stat.id;
              return (
@@ -197,7 +204,6 @@ const Card: React.FC<CardProps> = ({ data, hidden, onSelectStat, disabled, isWin
                     : 'border-theme-border bg-theme-bg hover:bg-theme-primary/20 hover:border-theme-primary hover:scale-[1.02] cursor-pointer active:translate-y-0.5 hover:shadow-[0_0_8px_var(--primary)]'
                   }
                   ${isWinner && !isStatHighlighted ? 'bg-theme-success/10 border-theme-success/50' : ''}
-                  ${index === 4 ? 'col-span-2 flex-row items-center justify-between' : ''}
                   ${isStatHighlighted 
                       ? (isWinner 
                           ? '!bg-theme-success !border-theme-success !text-theme-bg shadow-[0_0_20px_var(--success)] scale-105 z-20 animate-pulse' 
@@ -208,15 +214,15 @@ const Card: React.FC<CardProps> = ({ data, hidden, onSelectStat, disabled, isWin
                   }
                 `}
               >
-                <span className={`flex items-center gap-2 font-pixel text-[10px] 2xl:text-base ${disabled && !isStatHighlighted ? 'text-theme-muted' : (isStatHighlighted ? 'text-theme-bg' : 'text-theme-text group-hover:text-theme-primary')}`}>
+                <span className={`flex items-center gap-1 font-pixel text-[9px] md:text-[10px] 2xl:text-base ${disabled && !isStatHighlighted ? 'text-theme-muted' : (isStatHighlighted ? 'text-theme-bg' : 'text-theme-text group-hover:text-theme-primary')}`}>
                   {stat.icon}
                   <span className="truncate">{stat.label}</span>
                 </span>
-                <span className={`font-retro text-xl md:text-2xl 2xl:text-4xl ${disabled && !isStatHighlighted ? 'text-theme-muted' : (isStatHighlighted ? 'text-theme-bg' : 'text-theme-text group-hover:text-theme-primary')} ${index === 4 ? '' : 'mt-1'}`}>
+                <span className={`font-retro text-lg md:text-xl 2xl:text-4xl ${disabled && !isStatHighlighted ? 'text-theme-muted' : (isStatHighlighted ? 'text-theme-bg' : 'text-theme-text group-hover:text-theme-primary')} mt-0.5`}>
                   {stat.value}
                 </span>
                 {stat.rawValue && !disabled && (
-                  <span className="text-[8px] md:text-[10px] 2xl:text-xs text-theme-muted/60 mt-0.5">
+                  <span className="text-[7px] md:text-[8px] 2xl:text-xs text-theme-muted/60 mt-0.5 leading-tight">
                     {stat.rawValue}
                   </span>
                 )}
