@@ -9,6 +9,24 @@ import { Copy, Wifi, User, Cpu, RotateCcw, Swords, Trophy, Loader2, Disc, HelpCi
 import confetti from 'canvas-confetti';
 
 type Theme = 'cyberpunk' | 'snes' | 'dreamcast' | 'n64' | 'psx' | 'xbox' | 'winxp' | 'pc98';
+type ThemeBase = 'light' | 'dark';
+
+interface ThemeConfig {
+  id: Theme;
+  name: string;
+  base: ThemeBase;
+}
+
+const THEME_CONFIGS: Record<Theme, ThemeConfig> = {
+  cyberpunk: { id: 'cyberpunk', name: 'Cyberpunk', base: 'dark' },
+  snes: { id: 'snes', name: 'SNES', base: 'dark' },
+  dreamcast: { id: 'dreamcast', name: 'Dreamcast', base: 'light' },
+  n64: { id: 'n64', name: 'N64', base: 'dark' },
+  psx: { id: 'psx', name: 'PSX', base: 'dark' },
+  xbox: { id: 'xbox', name: 'Xbox', base: 'dark' },
+  winxp: { id: 'winxp', name: 'WinXP', base: 'light' },
+  pc98: { id: 'pc98', name: 'PC-98', base: 'dark' },
+};
 
 const App: React.FC = () => {
   const [theme, setTheme] = useState<Theme>('cyberpunk');
