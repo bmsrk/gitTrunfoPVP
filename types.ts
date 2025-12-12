@@ -33,6 +33,7 @@ export interface CardData extends GithubUser {
   influenceScore: number;
   activityScore: number;
   techBreadth: number;
+  impactScore: number;
   // Enriched data (optional, may be missing due to rate limits)
   repoStats?: GitHubRepoStats;
   languageStats?: GitHubLanguageStats;
@@ -44,6 +45,7 @@ export type StatType =
   | 'influenceScore' 
   | 'activityScore' 
   | 'techBreadth'
+  | 'impactScore'
   // Keep old stats for backward compatibility during migration
   | 'public_repos' 
   | 'followers' 
