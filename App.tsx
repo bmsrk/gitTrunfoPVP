@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Peer, { DataConnection } from 'peerjs';
-import { GameState, CardData, StatType, PeerMessage } from './types';
-import { generateDeck } from './services/githubService';
+import { GameState, CardData, StatType, PeerMessage, DeckType } from './types';
+import { generateDeck, DECK_CONFIGS } from './services/githubService';
 import { getBattleCommentary } from './services/geminiService';
 import { soundManager } from './services/soundService';
 import Card from './components/Card';
@@ -21,6 +21,8 @@ const App: React.FC = () => {
   const [gameState, setGameState] = useState<GameState>({
     status: 'LOBBY',
     mode: 'SINGLE',
+    gameMode: 'CASUAL',
+    selectedDeck: null,
     myDeck: [],
     opponentDeckCount: 0,
     currentMyCard: null,
@@ -32,13 +34,17 @@ const App: React.FC = () => {
     log: [],
     peerId: null,
     opponentPeerId: null,
-    aiCommentary: null
+    aiCommentary: null,
+    tournamentRound: 1,
+    tournamentWins: 0,
+    tournamentLosses: 0
   });
 
   const [inputPeerId, setInputPeerId] = useState('');
   const [isLoadingDeck, setIsLoadingDeck] = useState(false);
   const [isWaitingForOpponent, setIsWaitingForOpponent] = useState(false);
   const [showTutorial, setShowTutorial] = useState(false);
+  const [gameMode, setGameMode] = useState<'CASUAL' | 'TOURNAMENT'>('CASUAL');
   
   // Refs for PeerJS
   const peerRef = useRef<Peer | null>(null);
@@ -203,7 +209,7 @@ const App: React.FC = () => {
     setIsLoadingDeck(true);
     // Increased delay slightly to ensure connection is stable
     await new Promise(resolve => setTimeout(resolve, 500)); 
-    const fullDeck = await generateDeck(16);
+    const fullDeck = await generateDeck(16, gameState.selectedDeck || undefined);
     setIsLoadingDeck(false);
 
     const deck1 = fullDeck.slice(0, fullDeck.length / 2);
@@ -224,7 +230,12 @@ const App: React.FC = () => {
     setGameState(prev => ({ ...prev, ...initialState }));
     conn.send({
       type: 'HANDSHAKE',
-      payload: { deck: deck2, turn: initialState.turn === 'ME' ? 'OPPONENT' : 'ME' }
+      payload: { 
+        deck: deck2, 
+        turn: initialState.turn === 'ME' ? 'OPPONENT' : 'ME',
+        deckType: gameState.selectedDeck,
+        gameMode: gameState.gameMode
+      }
     });
     soundManager.playStart();
   };
@@ -232,7 +243,7 @@ const App: React.FC = () => {
   const startSinglePlayer = async () => {
     soundManager.playSelect();
     setIsLoadingDeck(true);
-    const fullDeck = await generateDeck(12);
+    const fullDeck = await generateDeck(12, gameState.selectedDeck || undefined);
     setIsLoadingDeck(false);
 
     const deck1 = fullDeck.slice(0, fullDeck.length / 2);
@@ -250,7 +261,7 @@ const App: React.FC = () => {
       turn: 'ME',
       lastWinner: null,
       lastStat: null,
-      log: ['> System Initialized', '> CPU Opponent Loaded'],
+      log: ['> System Initialized', '> CPU Opponent Loaded', `> Deck: ${gameState.selectedDeck || 'Standard'}`],
     }));
 
     (window as any).cpuDeck = deck2;
@@ -272,7 +283,9 @@ const App: React.FC = () => {
           opponentDeckCount: msg.payload.deck.length,
           pot: [],
           turn: msg.payload.turn,
-          log: ['> Connection Established', '> Game Started']
+          selectedDeck: msg.payload.deckType || prev.selectedDeck,
+          gameMode: msg.payload.gameMode || prev.gameMode,
+          log: ['> Connection Established', '> Game Started', `> Deck: ${msg.payload.deckType || 'Standard'}`]
         }));
         soundManager.playStart();
         break;
@@ -580,7 +593,93 @@ const App: React.FC = () => {
     </div>
   );
 
-  const renderLobby = () => (
+  const renderDeckSelection = () => (
+    <div className="flex flex-col items-center justify-center min-h-screen p-4 space-y-8 md:space-y-12 w-full max-w-6xl 2xl:max-w-7xl mx-auto relative">
+      
+      {/* Top Bar Controls */}
+      <div className="absolute top-4 right-4 flex gap-4">
+         <button 
+           onClick={() => { soundManager.playSelect(); setShowSettings(true); }}
+           className="bg-theme-panel border-2 border-theme-border p-2 md:p-3 rounded-theme hover:border-theme-primary hover:text-theme-primary transition-all group shadow-theme"
+           title="Settings"
+         >
+           <div className="flex items-center gap-2">
+             <Settings className="w-6 h-6 2xl:w-10 2xl:h-10" />
+           </div>
+         </button>
+
+         <button 
+           onClick={() => { 
+             soundManager.playSelect(); 
+             setGameState(prev => ({ ...prev, status: 'LOBBY', selectedDeck: null })); 
+           }}
+           className="bg-theme-panel border-2 border-theme-border p-2 md:p-3 rounded-theme hover:border-theme-danger hover:text-theme-danger transition-all shadow-theme"
+           title="Back to Lobby"
+         >
+           <div className="flex items-center gap-2">
+             <X className="w-6 h-6 2xl:w-10 2xl:h-10" />
+           </div>
+         </button>
+      </div>
+
+      <div className="text-center space-y-4 md:space-y-6 2xl:space-y-12 mt-12 md:mt-0">
+        <div className="inline-block p-4 md:p-6 2xl:p-10 border-4 border-theme-primary bg-theme-bg shadow-theme rounded-theme">
+             <Layers className="text-theme-primary drop-shadow-[0_0_10px_rgba(255,255,255,0.5)] w-12 h-12 md:w-16 md:h-16 2xl:w-32 2xl:h-32" />
+        </div>
+        
+        <h1 className="text-3xl md:text-6xl 2xl:text-8xl font-pixel tracking-tighter text-theme-text drop-shadow-[4px_4px_0_var(--shadow)] text-glow leading-none">
+          SELECT_DECK
+        </h1>
+        
+        <p className="font-retro text-lg md:text-xl 2xl:text-3xl text-theme-muted tracking-widest uppercase">
+          {gameMode === 'TOURNAMENT' ? 'Tournament Mode' : 'Casual Mode'}
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 w-full px-4">
+        {(Object.values(DECK_CONFIGS) as typeof DECK_CONFIGS[DeckType][]).map((deck) => (
+          <button 
+            key={deck.id}
+            onClick={() => {
+              soundManager.playSelect();
+              setGameState(prev => ({ ...prev, selectedDeck: deck.id, status: 'LOBBY' }));
+            }}
+            onMouseEnter={() => soundManager.playHover()}
+            className="group relative bg-theme-panel p-6 md:p-8 2xl:p-12 border-4 border-theme-border hover:border-theme-primary active:translate-y-2 transition-all shadow-theme hover:shadow-glow text-left rounded-theme"
+          >
+            <div className="flex items-start gap-4 md:gap-6">
+               <div className="text-5xl md:text-6xl 2xl:text-8xl group-hover:scale-110 transition-transform">
+                 {deck.icon}
+               </div>
+               <div className="flex-1">
+                 <h3 className="text-xl md:text-2xl 2xl:text-4xl font-pixel text-theme-text mb-2">{deck.name}</h3>
+                 <p className="font-retro text-sm md:text-base 2xl:text-xl text-theme-muted">{deck.description}</p>
+                 <div className="mt-3 flex flex-wrap gap-1">
+                   {deck.users.slice(0, 5).map((user, i) => (
+                     <span key={i} className="text-[10px] md:text-xs 2xl:text-sm font-retro bg-theme-bg text-theme-primary px-2 py-0.5 rounded-theme border border-theme-border">
+                       {user}
+                     </span>
+                   ))}
+                   <span className="text-[10px] md:text-xs 2xl:text-sm font-retro text-theme-muted">
+                     +{deck.users.length - 5} more
+                   </span>
+                 </div>
+               </div>
+            </div>
+          </button>
+        ))}
+      </div>
+      
+      <div className="font-retro text-theme-muted/40 text-xs md:text-sm 2xl:text-xl">
+        SELECT_YOUR_PREFERRED_STACK
+      </div>
+    </div>
+  );
+
+  const renderLobby = () => {
+    const hasSelectedDeck = gameState.selectedDeck !== null;
+    
+    return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4 space-y-8 md:space-y-12 w-full max-w-4xl 2xl:max-w-7xl mx-auto relative">
       
       {/* Top Bar Controls */}
@@ -634,15 +733,104 @@ const App: React.FC = () => {
         </p>
       </div>
 
+      {/* Game Mode Selection */}
+      <div className="w-full max-w-xl 2xl:max-w-4xl bg-theme-bg p-1 border-4 border-theme-border shadow-theme rounded-theme mx-4">
+        <div className="bg-theme-panel p-4 md:p-6 flex flex-col gap-4 rounded-[calc(var(--radius)-4px)]">
+            <h3 className="font-pixel text-xs md:text-sm 2xl:text-xl text-theme-text flex items-center gap-2">
+              <Gamepad2 size={16} className="2xl:w-6 2xl:h-6" /> GAME_MODE:
+            </h3>
+            <div className="grid grid-cols-2 gap-4">
+              <button
+                onClick={() => {
+                  soundManager.playSelect();
+                  setGameMode('CASUAL');
+                  setGameState(prev => ({ ...prev, gameMode: 'CASUAL' }));
+                }}
+                className={`p-4 border-4 transition-all rounded-theme ${
+                  gameMode === 'CASUAL'
+                    ? 'border-theme-primary bg-theme-primary/20 shadow-glow'
+                    : 'border-theme-border bg-theme-bg hover:border-theme-text'
+                }`}
+              >
+                <span className={`font-pixel text-xs md:text-sm 2xl:text-xl uppercase ${gameMode === 'CASUAL' ? 'text-theme-primary' : 'text-theme-muted'}`}>
+                  Casual
+                </span>
+              </button>
+              <button
+                onClick={() => {
+                  soundManager.playSelect();
+                  setGameMode('TOURNAMENT');
+                  setGameState(prev => ({ ...prev, gameMode: 'TOURNAMENT' }));
+                }}
+                className={`p-4 border-4 transition-all rounded-theme ${
+                  gameMode === 'TOURNAMENT'
+                    ? 'border-theme-primary bg-theme-primary/20 shadow-glow'
+                    : 'border-theme-border bg-theme-bg hover:border-theme-text'
+                }`}
+              >
+                <span className={`font-pixel text-xs md:text-sm 2xl:text-xl uppercase ${gameMode === 'TOURNAMENT' ? 'text-theme-primary' : 'text-theme-muted'}`}>
+                  Tournament
+                </span>
+              </button>
+            </div>
+        </div>
+      </div>
+
+      {/* Deck Selection Display */}
+      <div className="w-full max-w-xl 2xl:max-w-4xl bg-theme-bg p-1 border-4 border-theme-border shadow-theme rounded-theme mx-4">
+        <div className="bg-theme-panel p-4 md:p-6 flex flex-col gap-4 rounded-[calc(var(--radius)-4px)]">
+            <h3 className="font-pixel text-xs md:text-sm 2xl:text-xl text-theme-text flex items-center gap-2">
+              <Layers size={16} className="2xl:w-6 2xl:h-6" /> SELECTED_DECK:
+            </h3>
+            {hasSelectedDeck ? (
+              <div className="flex items-center justify-between p-4 bg-theme-bg border-2 border-theme-primary rounded-theme">
+                <div className="flex items-center gap-3">
+                  <span className="text-3xl">{DECK_CONFIGS[gameState.selectedDeck!].icon}</span>
+                  <div>
+                    <p className="font-pixel text-sm md:text-base 2xl:text-xl text-theme-primary">{DECK_CONFIGS[gameState.selectedDeck!].name}</p>
+                    <p className="font-retro text-xs md:text-sm 2xl:text-lg text-theme-muted">{DECK_CONFIGS[gameState.selectedDeck!].description}</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => {
+                    soundManager.playSelect();
+                    setGameState(prev => ({ ...prev, status: 'DECK_SELECT' }));
+                  }}
+                  className="bg-theme-primary text-theme-bg font-pixel px-4 py-2 2xl:px-6 2xl:py-3 2xl:text-xl rounded-theme hover:bg-theme-text hover:text-theme-primary transition-colors"
+                >
+                  CHANGE
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={() => {
+                  soundManager.playSelect();
+                  setGameState(prev => ({ ...prev, status: 'DECK_SELECT' }));
+                }}
+                className="p-4 bg-theme-bg border-2 border-dashed border-theme-border hover:border-theme-primary rounded-theme transition-all"
+              >
+                <span className="font-pixel text-sm md:text-base 2xl:text-xl text-theme-muted hover:text-theme-primary">
+                  {'>> CLICK TO SELECT DECK <<'}
+                </span>
+              </button>
+            )}
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 w-full px-4">
         <button 
-             onClick={startSinglePlayer}
-             onMouseEnter={() => soundManager.playHover()}
-             className="group relative bg-theme-panel p-6 md:p-8 2xl:p-16 border-4 border-theme-border hover:border-theme-primary active:translate-y-2 transition-all shadow-theme hover:shadow-glow text-left rounded-theme"
+             onClick={hasSelectedDeck ? startSinglePlayer : undefined}
+             onMouseEnter={() => hasSelectedDeck && soundManager.playHover()}
+             disabled={!hasSelectedDeck}
+             className={`group relative bg-theme-panel p-6 md:p-8 2xl:p-16 border-4 border-theme-border transition-all shadow-theme text-left rounded-theme ${
+               hasSelectedDeck 
+                 ? 'hover:border-theme-primary active:translate-y-2 hover:shadow-glow cursor-pointer' 
+                 : 'opacity-50 cursor-not-allowed'
+             }`}
         >
           <div className="absolute top-0 left-0 bg-theme-primary text-theme-bg font-pixel text-[10px] md:text-xs 2xl:text-xl px-2 py-1 rounded-tl-[calc(var(--radius)-4px)]">1 PLAYER</div>
           <div className="flex items-center gap-4 md:gap-6 mb-2 md:mb-4 mt-2">
-             <Cpu className="text-theme-primary group-hover:scale-110 transition-transform w-10 h-10 md:w-12 md:h-12 2xl:w-24 2xl:h-24" />
+             <Cpu className={`text-theme-primary ${hasSelectedDeck ? 'group-hover:scale-110' : ''} transition-transform w-10 h-10 md:w-12 md:h-12 2xl:w-24 2xl:h-24`} />
              <div>
                <h3 className="text-xl md:text-2xl 2xl:text-5xl font-pixel text-theme-text mb-1">VS CPU</h3>
                <p className="font-retro text-base md:text-lg 2xl:text-2xl text-theme-muted">TRAINING_MODE.EXE</p>
@@ -651,13 +839,18 @@ const App: React.FC = () => {
         </button>
 
         <button 
-             onClick={initHost}
-             onMouseEnter={() => soundManager.playHover()}
-             className="group relative bg-theme-panel p-6 md:p-8 2xl:p-16 border-4 border-theme-border hover:border-theme-success active:translate-y-2 transition-all shadow-theme hover:shadow-[0_0_15px_var(--success)] text-left rounded-theme"
+             onClick={hasSelectedDeck ? initHost : undefined}
+             onMouseEnter={() => hasSelectedDeck && soundManager.playHover()}
+             disabled={!hasSelectedDeck}
+             className={`group relative bg-theme-panel p-6 md:p-8 2xl:p-16 border-4 border-theme-border transition-all shadow-theme text-left rounded-theme ${
+               hasSelectedDeck 
+                 ? 'hover:border-theme-success active:translate-y-2 hover:shadow-[0_0_15px_var(--success)] cursor-pointer' 
+                 : 'opacity-50 cursor-not-allowed'
+             }`}
         >
           <div className="absolute top-0 left-0 bg-theme-success text-theme-bg font-pixel text-[10px] md:text-xs 2xl:text-xl px-2 py-1 rounded-tl-[calc(var(--radius)-4px)]">2 PLAYER</div>
           <div className="flex items-center gap-4 md:gap-6 mb-2 md:mb-4 mt-2">
-             <Wifi className="text-theme-success group-hover:scale-110 transition-transform w-10 h-10 md:w-12 md:h-12 2xl:w-24 2xl:h-24" />
+             <Wifi className={`text-theme-success ${hasSelectedDeck ? 'group-hover:scale-110' : ''} transition-transform w-10 h-10 md:w-12 md:h-12 2xl:w-24 2xl:h-24`} />
              <div>
                <h3 className="text-xl md:text-2xl 2xl:text-5xl font-pixel text-theme-text mb-1">HOST GAME</h3>
                <p className="font-retro text-base md:text-lg 2xl:text-2xl text-theme-muted">CREATE_LOBBY.BAT</p>
@@ -678,10 +871,14 @@ const App: React.FC = () => {
                 className="flex-1 bg-theme-bg border-2 border-r-0 border-theme-border p-3 md:p-4 font-retro text-lg md:text-xl 2xl:text-3xl text-theme-text focus:outline-none focus:border-theme-primary focus:border-r-2 placeholder:text-theme-muted/50 rounded-l-theme min-w-0"
                 value={inputPeerId}
                 onChange={(e) => setInputPeerId(e.target.value)}
+                disabled={!hasSelectedDeck}
               />
               <button 
-                onClick={connectToPeer}
-                className="bg-theme-primary text-theme-bg font-pixel font-bold px-4 md:px-8 2xl:px-12 2xl:text-2xl border-2 border-theme-primary hover:bg-theme-text hover:text-theme-primary transition-colors rounded-r-theme"
+                onClick={hasSelectedDeck ? connectToPeer : undefined}
+                disabled={!hasSelectedDeck}
+                className={`bg-theme-primary text-theme-bg font-pixel font-bold px-4 md:px-8 2xl:px-12 2xl:text-2xl border-2 border-theme-primary rounded-r-theme ${
+                  hasSelectedDeck ? 'hover:bg-theme-text hover:text-theme-primary' : 'opacity-50 cursor-not-allowed'
+                } transition-colors`}
               >
                 {gameState.status === 'CONNECTING' ? '...' : 'CONNECT'}
               </button>
@@ -703,7 +900,8 @@ const App: React.FC = () => {
       
       <div className="font-retro text-theme-muted/40 text-xs md:text-sm 2xl:text-xl">v.2.1.0 THEME_ENGINE // {theme.toUpperCase()}</div>
     </div>
-  );
+    );
+  };
 
   const renderGame = () => {
     if (isLoadingDeck) return (
@@ -1027,6 +1225,7 @@ const App: React.FC = () => {
   return (
     <div className="min-h-screen bg-theme-bg text-theme-text font-sans scanlines" data-theme={theme}>
       {gameState.status === 'LOBBY' && renderLobby()}
+      {gameState.status === 'DECK_SELECT' && renderDeckSelection()}
       {(gameState.status === 'PLAYING' || gameState.status === 'CONNECTING') && renderGame()}
       {gameState.status === 'GAME_OVER' && renderGameOver()}
       {showTutorial && renderTutorialModal()}

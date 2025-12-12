@@ -2,38 +2,147 @@
 <img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
 </div>
 
-# Run and deploy your AI Studio app
+# GitTrunfo P2P 🎮
 
-This contains everything you need to run your app locally.
+<div align="center">
+<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+</div>
 
-View your app in AI Studio: https://ai.studio/apps/drive/1nFUReylisquoiCcy6BJCQ8B1Z4RHTXsZ
+[![Deploy to GitHub Pages](https://github.com/bmsrk/gitTrunfoPVP/actions/workflows/deploy.yml/badge.svg)](https://github.com/bmsrk/gitTrunfoPVP/actions/workflows/deploy.yml)
 
-## Run Locally
+> A browser-based multiplayer card game where you battle using GitHub developer profiles. Choose your deck, select your stats, and dominate the competition!
 
-**Prerequisites:**  Node.js
+🎮 **[Play Now](https://bmsrk.github.io/gitTrunfoPVP/)** | 📖 **[Read the Docs](ARCHITECTURE.md)** | 🎯 **[How to Play](GAMEPLAY.md)**
 
+## ✨ Features
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+- 🎴 **Stack-Based Decks**: Choose from 4 specialized decks
+  - ⭐ **Standard**: Popular developers across all languages
+  - 🌐 **Web Technologies**: JavaScript, TypeScript, HTML/CSS experts
+  - 🏛️ **Legacy Languages**: C, C++, Java, system programming legends
+  - 🔮 **Esoteric**: Rust, Go, functional programming enthusiasts
 
-## Deploy to GitHub Pages
+- 🎮 **Game Modes**:
+  - **Casual Mode**: Quick matches for fun
+  - **Tournament Mode**: Competitive MTG-style play (coming soon)
+
+- 👥 **Play Options**:
+  - **Single Player**: Battle against AI opponent
+  - **Multiplayer**: Real-time P2P battles via WebRTC
+
+- 🎨 **8 Retro Themes**: Cyberpunk, SNES, Dreamcast, N64, PSX, Xbox, WinXP, PC98
+
+- 🔊 **Retro Sound Effects**: Web Audio API-powered 8-bit sounds
+
+- 📱 **Fully Responsive**: Play on desktop, tablet, or mobile
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+- Node.js (v16 or higher)
+- npm or yarn
+
+### Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/bmsrk/gitTrunfoPVP.git
+cd gitTrunfoPVP
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+```
+
+Open your browser to `http://localhost:3000/gitTrunfoPVP/`
+
+### Build for Production
+
+```bash
+npm run build
+```
+
+## 🎯 How to Play
+
+1. **Select Game Mode**: Choose between Casual or Tournament mode
+2. **Pick Your Deck**: Select a stack-based deck (Web, Legacy, Esoteric, or Standard)
+3. **Start Playing**: Choose Single Player (vs CPU) or Multiplayer (P2P)
+4. **Battle**: Select the stat where your card has the highest value
+5. **Win**: Collect all your opponent's cards to achieve victory!
+
+For detailed gameplay instructions, see [GAMEPLAY.md](GAMEPLAY.md).
+
+## 📚 Documentation
+
+- **[ARCHITECTURE.md](ARCHITECTURE.md)** - Technical architecture and code structure
+- **[GAMEPLAY.md](GAMEPLAY.md)** - Complete gameplay guide and strategies
+- **[CONTRIBUTING.md](CONTRIBUTING.md)** - How to contribute to the project
+
+## 🛠️ Technology Stack
+
+- **Frontend**: React 19.2.1 with TypeScript
+- **Build Tool**: Vite 6.2.0
+- **Styling**: Tailwind CSS (CDN)
+- **P2P**: PeerJS 1.5.5 (WebRTC)
+- **Icons**: Lucide React
+- **Effects**: Canvas Confetti
+
+## 🎨 Themes
+
+The game includes 8 carefully crafted retro themes:
+
+- **Cyberpunk** (Default): Dark terminal aesthetic
+- **SNES**: 16-bit RPG style
+- **Dreamcast**: Clean orange/white
+- **N64**: Dark blue console
+- **PSX**: Grey PlayStation
+- **Xbox**: Green gaming
+- **WinXP**: Classic Windows blue
+- **PC98**: Retro Japanese PC
+
+## 🌐 Deployment
 
 The app is automatically deployed to GitHub Pages when changes are pushed to the `main` branch.
 
-The deployment workflow:
-1. Installs dependencies
-2. Builds the production bundle
-3. Deploys to GitHub Pages
+**Live Demo**: [https://bmsrk.github.io/gitTrunfoPVP/](https://bmsrk.github.io/gitTrunfoPVP/)
 
-To deploy manually, go to the Actions tab and run the "Deploy to GitHub Pages" workflow.
+### Manual Deployment
 
-### Configuration
+Go to the Actions tab and run the "Deploy to GitHub Pages" workflow.
 
-The app is configured to deploy at the base path `/gitTrunfoPVP/` for GitHub Pages. This is set in `vite.config.ts`:
+## 🤝 Contributing
 
-```typescript
-base: '/gitTrunfoPVP/',
-```
+Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
+## 📝 License
+
+This project is open source and available under the MIT License.
+
+## 🙏 Acknowledgments
+
+- GitHub API for developer data
+- PeerJS for WebRTC simplification
+- All the amazing developers whose profiles are featured in the decks
+
+## 🐛 Known Issues
+
+- GitHub API rate limit: 60 requests/hour (unauthenticated)
+- WebRTC may be blocked by some corporate firewalls
+- Mobile experience optimized but best on desktop
+
+## 🗺️ Roadmap
+
+- [ ] Tournament bracket system implementation
+- [ ] User authentication for higher API limits
+- [ ] Custom deck creation
+- [ ] Persistent stats and leaderboards
+- [ ] Sound toggle preference
+- [ ] Replay system
+- [ ] Accessibility improvements
+
+---
+
+**Made with ❤️ by the open source community**

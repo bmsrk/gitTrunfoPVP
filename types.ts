@@ -16,9 +16,21 @@ export interface CardData extends GithubUser {
 
 export type StatType = 'public_repos' | 'followers' | 'following' | 'public_gists' | 'seniority';
 
+export type DeckType = 'Standard' | 'Web' | 'LegacyLanguages' | 'Esoteric';
+
+export interface DeckConfig {
+  id: DeckType;
+  name: string;
+  description: string;
+  icon: string;
+  users: string[];
+}
+
 export interface GameState {
-  status: 'LOBBY' | 'CONNECTING' | 'PLAYING' | 'GAME_OVER';
+  status: 'LOBBY' | 'DECK_SELECT' | 'CONNECTING' | 'PLAYING' | 'GAME_OVER';
   mode: 'SINGLE' | 'HOST' | 'CLIENT';
+  gameMode: 'CASUAL' | 'TOURNAMENT';
+  selectedDeck: DeckType | null;
   myDeck: CardData[];
   opponentDeckCount: number;
   currentMyCard: CardData | null;
@@ -31,9 +43,13 @@ export interface GameState {
   peerId: string | null;
   opponentPeerId: string | null;
   aiCommentary: string | null;
+  // Tournament mode
+  tournamentRound: number;
+  tournamentWins: number;
+  tournamentLosses: number;
 }
 
 export interface PeerMessage {
-  type: 'HANDSHAKE' | 'MOVE' | 'RESULT' | 'RESTART' | 'REVEAL' | 'GAME_OVER_ACK';
+  type: 'HANDSHAKE' | 'MOVE' | 'RESULT' | 'RESTART' | 'REVEAL' | 'GAME_OVER_ACK' | 'DECK_SELECT';
   payload?: any;
 }
