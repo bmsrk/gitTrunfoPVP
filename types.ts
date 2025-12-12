@@ -50,6 +50,6 @@ export interface GameState {
 }
 
 export interface PeerMessage {
-  type: 'HANDSHAKE' | 'MOVE' | 'RESULT' | 'RESTART' | 'REVEAL' | 'GAME_OVER_ACK' | 'DECK_SELECT';
+  type: 'HANDSHAKE' | 'MOVE' | 'RESULT' | 'RESTART' | 'REVEAL' | 'GAME_OVER_ACK';
   payload?: any;
 }

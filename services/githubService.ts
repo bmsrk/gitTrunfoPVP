@@ -76,9 +76,9 @@ export const fetchUser = async (username: string): Promise<CardData | null> => {
   }
 };
 
-export const generateDeck = async (count: number = 10, deckType?: DeckType): Promise<CardData[]> => {
-  // Use deck-specific users if provided, otherwise use fallback
-  const userList = deckType ? DECK_CONFIGS[deckType].users : FALLBACK_USERS;
+export const generateDeck = async (count: number = 10, deckType: DeckType = 'Standard'): Promise<CardData[]> => {
+  // Use deck-specific users
+  const userList = DECK_CONFIGS[deckType].users;
   
   // Shuffle selected users
   const shuffled = [...userList].sort(() => 0.5 - Math.random());

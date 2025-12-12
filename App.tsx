@@ -44,7 +44,6 @@ const App: React.FC = () => {
   const [isLoadingDeck, setIsLoadingDeck] = useState(false);
   const [isWaitingForOpponent, setIsWaitingForOpponent] = useState(false);
   const [showTutorial, setShowTutorial] = useState(false);
-  const [gameMode, setGameMode] = useState<'CASUAL' | 'TOURNAMENT'>('CASUAL');
   
   // Refs for PeerJS
   const peerRef = useRef<Peer | null>(null);
@@ -209,7 +208,7 @@ const App: React.FC = () => {
     setIsLoadingDeck(true);
     // Increased delay slightly to ensure connection is stable
     await new Promise(resolve => setTimeout(resolve, 500)); 
-    const fullDeck = await generateDeck(16, gameState.selectedDeck || undefined);
+    const fullDeck = await generateDeck(16, gameState.selectedDeck || 'Standard');
     setIsLoadingDeck(false);
 
     const deck1 = fullDeck.slice(0, fullDeck.length / 2);
@@ -243,7 +242,7 @@ const App: React.FC = () => {
   const startSinglePlayer = async () => {
     soundManager.playSelect();
     setIsLoadingDeck(true);
-    const fullDeck = await generateDeck(12, gameState.selectedDeck || undefined);
+    const fullDeck = await generateDeck(12, gameState.selectedDeck || 'Standard');
     setIsLoadingDeck(false);
 
     const deck1 = fullDeck.slice(0, fullDeck.length / 2);
@@ -632,12 +631,12 @@ const App: React.FC = () => {
         </h1>
         
         <p className="font-retro text-lg md:text-xl 2xl:text-3xl text-theme-muted tracking-widest uppercase">
-          {gameMode === 'TOURNAMENT' ? 'Tournament Mode' : 'Casual Mode'}
+          {gameState.gameMode === 'TOURNAMENT' ? 'Tournament Mode' : 'Casual Mode'}
         </p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 w-full px-4">
-        {(Object.values(DECK_CONFIGS) as typeof DECK_CONFIGS[DeckType][]).map((deck) => (
+        {Object.values(DECK_CONFIGS).map((deck) => (
           <button 
             key={deck.id}
             onClick={() => {
@@ -743,32 +742,30 @@ const App: React.FC = () => {
               <button
                 onClick={() => {
                   soundManager.playSelect();
-                  setGameMode('CASUAL');
                   setGameState(prev => ({ ...prev, gameMode: 'CASUAL' }));
                 }}
                 className={`p-4 border-4 transition-all rounded-theme ${
-                  gameMode === 'CASUAL'
+                  gameState.gameMode === 'CASUAL'
                     ? 'border-theme-primary bg-theme-primary/20 shadow-glow'
                     : 'border-theme-border bg-theme-bg hover:border-theme-text'
                 }`}
               >
-                <span className={`font-pixel text-xs md:text-sm 2xl:text-xl uppercase ${gameMode === 'CASUAL' ? 'text-theme-primary' : 'text-theme-muted'}`}>
+                <span className={`font-pixel text-xs md:text-sm 2xl:text-xl uppercase ${gameState.gameMode === 'CASUAL' ? 'text-theme-primary' : 'text-theme-muted'}`}>
                   Casual
                 </span>
               </button>
               <button
                 onClick={() => {
                   soundManager.playSelect();
-                  setGameMode('TOURNAMENT');
                   setGameState(prev => ({ ...prev, gameMode: 'TOURNAMENT' }));
                 }}
                 className={`p-4 border-4 transition-all rounded-theme ${
-                  gameMode === 'TOURNAMENT'
+                  gameState.gameMode === 'TOURNAMENT'
                     ? 'border-theme-primary bg-theme-primary/20 shadow-glow'
                     : 'border-theme-border bg-theme-bg hover:border-theme-text'
                 }`}
               >
-                <span className={`font-pixel text-xs md:text-sm 2xl:text-xl uppercase ${gameMode === 'TOURNAMENT' ? 'text-theme-primary' : 'text-theme-muted'}`}>
+                <span className={`font-pixel text-xs md:text-sm 2xl:text-xl uppercase ${gameState.gameMode === 'TOURNAMENT' ? 'text-theme-primary' : 'text-theme-muted'}`}>
                   Tournament
                 </span>
               </button>
@@ -785,10 +782,14 @@ const App: React.FC = () => {
             {hasSelectedDeck ? (
               <div className="flex items-center justify-between p-4 bg-theme-bg border-2 border-theme-primary rounded-theme">
                 <div className="flex items-center gap-3">
-                  <span className="text-3xl">{DECK_CONFIGS[gameState.selectedDeck!].icon}</span>
+                  <span className="text-3xl">{gameState.selectedDeck ? DECK_CONFIGS[gameState.selectedDeck].icon : '⭐'}</span>
                   <div>
-                    <p className="font-pixel text-sm md:text-base 2xl:text-xl text-theme-primary">{DECK_CONFIGS[gameState.selectedDeck!].name}</p>
-                    <p className="font-retro text-xs md:text-sm 2xl:text-lg text-theme-muted">{DECK_CONFIGS[gameState.selectedDeck!].description}</p>
+                    <p className="font-pixel text-sm md:text-base 2xl:text-xl text-theme-primary">
+                      {gameState.selectedDeck ? DECK_CONFIGS[gameState.selectedDeck].name : 'Unknown'}
+                    </p>
+                    <p className="font-retro text-xs md:text-sm 2xl:text-lg text-theme-muted">
+                      {gameState.selectedDeck ? DECK_CONFIGS[gameState.selectedDeck].description : ''}
+                    </p>
                   </div>
                 </div>
                 <button
