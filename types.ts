@@ -10,13 +10,48 @@ export interface GithubUser {
   bio: string;
 }
 
-export interface CardData extends GithubUser {
-  seniority: number; // calculated years active
+export interface GitHubRepoStats {
+  totalStars: number;
+  totalForks: number;
+  avgStarsPerRepo: number;
+  topRepoStars: number;
+  recentCommits: number;
+  lastCommitDate: string | null;
 }
 
-export type StatType = 'public_repos' | 'followers' | 'following' | 'public_gists' | 'seniority';
+export interface GitHubLanguageStats {
+  languages: Record<string, number>; // language name -> bytes
+  topLanguage: string | null;
+  languageCount: number;
+}
 
-export type DeckType = 'Standard' | 'Web' | 'LegacyLanguages' | 'Esoteric';
+export interface CardData extends GithubUser {
+  seniority: number; // calculated years active
+  // Strategic Attributes (normalized 0-100)
+  followersScore: number;
+  repositoriesScore: number;
+  influenceScore: number;
+  activityScore: number;
+  techBreadth: number;
+  // Enriched data (optional, may be missing due to rate limits)
+  repoStats?: GitHubRepoStats;
+  languageStats?: GitHubLanguageStats;
+}
+
+export type StatType = 
+  | 'followersScore' 
+  | 'repositoriesScore' 
+  | 'influenceScore' 
+  | 'activityScore' 
+  | 'techBreadth'
+  // Keep old stats for backward compatibility during migration
+  | 'public_repos' 
+  | 'followers' 
+  | 'following' 
+  | 'public_gists' 
+  | 'seniority';
+
+export type DeckType = 'Standard' | 'Web' | 'LegacyLanguages' | 'Esoteric' | 'Corporate';
 
 export interface DeckConfig {
   id: DeckType;
@@ -24,6 +59,22 @@ export interface DeckConfig {
   description: string;
   icon: string;
   users: string[];
+}
+
+export interface BattleLogEvent {
+  type: 'SYSTEM' | 'BATTLE' | 'ROUND_END' | 'GAME_START';
+  message: string;
+  details?: {
+    stat?: StatType;
+    myValue?: number;
+    oppValue?: number;
+    myNormalized?: number;
+    oppNormalized?: number;
+    myScore?: number;
+    oppScore?: number;
+    winner?: 'ME' | 'OPPONENT' | 'DRAW';
+    deckType?: DeckType;
+  };
 }
 
 export interface GameState {
@@ -39,7 +90,7 @@ export interface GameState {
   turn: 'ME' | 'OPPONENT';
   lastWinner: 'ME' | 'OPPONENT' | 'DRAW' | null;
   lastStat: StatType | null;
-  log: string[];
+  log: BattleLogEvent[];
   peerId: string | null;
   opponentPeerId: string | null;
   aiCommentary: string | null;

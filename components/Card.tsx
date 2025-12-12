@@ -1,6 +1,6 @@
 import React from 'react';
 import { CardData, StatType } from '../types';
-import { GitBranch, Users, UserPlus, FileCode, Clock, ArrowDown, Loader2 } from 'lucide-react';
+import { Zap, Star, TrendingUp, Activity, Grid, ArrowDown, Loader2 } from 'lucide-react';
 import { soundManager } from '../services/soundService';
 
 interface CardProps {
@@ -85,12 +85,43 @@ const Card: React.FC<CardProps> = ({ data, hidden, onSelectStat, disabled, isWin
     );
   }
 
-  const stats: { id: StatType; label: string; icon: React.ReactNode; value: number }[] = [
-    { id: 'public_repos', label: 'REPOS', icon: <GitBranch className="w-3 h-3 md:w-4 md:h-4 2xl:w-6 2xl:h-6" />, value: data.public_repos },
-    { id: 'followers', label: 'FOLLOWERS', icon: <Users className="w-3 h-3 md:w-4 md:h-4 2xl:w-6 2xl:h-6" />, value: data.followers },
-    { id: 'following', label: 'FOLLOWING', icon: <UserPlus className="w-3 h-3 md:w-4 md:h-4 2xl:w-6 2xl:h-6" />, value: data.following },
-    { id: 'public_gists', label: 'GISTS', icon: <FileCode className="w-3 h-3 md:w-4 md:h-4 2xl:w-6 2xl:h-6" />, value: data.public_gists },
-    { id: 'seniority', label: 'EXP. YEARS', icon: <Clock className="w-3 h-3 md:w-4 md:h-4 2xl:w-6 2xl:h-6" />, value: data.seniority },
+  // Updated stats with new strategic attributes
+  const stats: { id: StatType; label: string; icon: React.ReactNode; value: number; rawValue?: string }[] = [
+    { 
+      id: 'followersScore', 
+      label: 'FOLLOWERS', 
+      icon: <Zap className="w-3 h-3 md:w-4 md:h-4 2xl:w-6 2xl:h-6" />, 
+      value: data.followersScore,
+      rawValue: `${data.followers} raw`
+    },
+    { 
+      id: 'repositoriesScore', 
+      label: 'REPOS', 
+      icon: <Star className="w-3 h-3 md:w-4 md:h-4 2xl:w-6 2xl:h-6" />, 
+      value: data.repositoriesScore,
+      rawValue: `${data.public_repos} raw`
+    },
+    { 
+      id: 'influenceScore', 
+      label: 'INFLUENCE', 
+      icon: <TrendingUp className="w-3 h-3 md:w-4 md:h-4 2xl:w-6 2xl:h-6" />, 
+      value: data.influenceScore,
+      rawValue: data.repoStats ? `${data.repoStats.totalStars}★ ${data.repoStats.totalForks}⑂` : undefined
+    },
+    { 
+      id: 'activityScore', 
+      label: 'ACTIVITY', 
+      icon: <Activity className="w-3 h-3 md:w-4 md:h-4 2xl:w-6 2xl:h-6" />, 
+      value: data.activityScore,
+      rawValue: data.repoStats ? `${data.repoStats.recentCommits} recent` : undefined
+    },
+    { 
+      id: 'techBreadth', 
+      label: 'TECH BREADTH', 
+      icon: <Grid className="w-3 h-3 md:w-4 md:h-4 2xl:w-6 2xl:h-6" />, 
+      value: data.techBreadth,
+      rawValue: data.languageStats ? `${data.languageStats.languageCount} langs` : undefined
+    },
   ];
 
   const handleMouseEnter = () => {
@@ -159,6 +190,7 @@ const Card: React.FC<CardProps> = ({ data, hidden, onSelectStat, disabled, isWin
                 }}
                 disabled={disabled}
                 onMouseEnter={() => !disabled && soundManager.playHover()}
+                title={stat.rawValue}
                 className={`flex flex-col items-start justify-center px-2 2xl:px-4 py-1.5 2xl:py-3 border-2 transition-all duration-200 group rounded-theme relative overflow-hidden min-h-[60px] md:min-h-[70px] 2xl:min-h-[100px]
                   ${disabled 
                     ? 'border-transparent cursor-default' 
@@ -183,6 +215,11 @@ const Card: React.FC<CardProps> = ({ data, hidden, onSelectStat, disabled, isWin
                 <span className={`font-retro text-xl md:text-2xl 2xl:text-4xl ${disabled && !isStatHighlighted ? 'text-theme-muted' : (isStatHighlighted ? 'text-theme-bg' : 'text-theme-text group-hover:text-theme-primary')} ${index === 4 ? '' : 'mt-1'}`}>
                   {stat.value}
                 </span>
+                {stat.rawValue && !disabled && (
+                  <span className="text-[8px] md:text-[10px] 2xl:text-xs text-theme-muted/60 mt-0.5">
+                    {stat.rawValue}
+                  </span>
+                )}
               </button>
           )})}
         </div>
