@@ -22,8 +22,8 @@ const Card: React.FC<CardProps> = ({ data, hidden, onSelectStat, disabled, isWin
   const animationClass = animationType === 'reveal' ? 'animate-card-reveal' : 'animate-card-enter';
 
   const containerClasses = `
-    w-[85vw] max-w-[320px] md:w-80 2xl:w-[30rem]
-    h-[60vh] min-h-[480px] md:h-[36rem] 2xl:h-[48rem]
+    w-[85vw] max-w-[320px] md:w-80 lg:w-96
+    h-[60vh] min-h-[480px] md:h-[36rem] lg:h-[40rem]
     bg-theme-panel border-4 flex flex-col relative transition-all duration-300 rounded-theme overflow-hidden box-border
     ${!hidden ? animationClass : ''} 
     ${isWinner ? 'border-theme-success animate-glow-pulse scale-105 z-10' : ''}
@@ -78,7 +78,7 @@ const Card: React.FC<CardProps> = ({ data, hidden, onSelectStat, disabled, isWin
                 <div className="text-theme-muted font-pixel text-2xl md:text-3xl 2xl:text-5xl animate-pulse tracking-widest text-center text-glow z-10">
                   UNKNOWN<br/>ENTITY
                 </div>
-                <div className="absolute bottom-4 text-xs md:text-sm 2xl:text-xl font-retro text-theme-muted z-10">WAITING FOR REVEAL...</div>
+                <div className="absolute bottom-4 text-xs md:text-sm lg:text-lg font-retro text-theme-muted z-10">WAITING FOR REVEAL...</div>
             </>
         )}
       </div>
@@ -90,46 +90,50 @@ const Card: React.FC<CardProps> = ({ data, hidden, onSelectStat, disabled, isWin
     { 
       id: 'followersScore', 
       label: 'FOLLOWERS', 
-      icon: <Zap className="w-3 h-3 md:w-4 md:h-4 2xl:w-6 2xl:h-6" />, 
+      icon: <Zap className="w-3 h-3 md:w-4 md:h-4 lg:w-5 lg:h-5" />, 
       value: data.followersScore,
       rawValue: `${data.followers} raw`
     },
     { 
       id: 'repositoriesScore', 
       label: 'REPOS', 
-      icon: <Star className="w-3 h-3 md:w-4 md:h-4 2xl:w-6 2xl:h-6" />, 
+      icon: <Star className="w-3 h-3 md:w-4 md:h-4 lg:w-5 lg:h-5" />, 
       value: data.repositoriesScore,
       rawValue: `${data.public_repos} raw`
     },
     { 
       id: 'influenceScore', 
       label: 'INFLUENCE', 
-      icon: <TrendingUp className="w-3 h-3 md:w-4 md:h-4 2xl:w-6 2xl:h-6" />, 
+      icon: <TrendingUp className="w-3 h-3 md:w-4 md:h-4 lg:w-5 lg:h-5" />, 
       value: data.influenceScore,
       rawValue: data.repoStats ? `${data.repoStats.totalStars}★ ${data.repoStats.totalForks}⑂` : undefined
     },
     { 
       id: 'activityScore', 
       label: 'ACTIVITY', 
-      icon: <Activity className="w-3 h-3 md:w-4 md:h-4 2xl:w-6 2xl:h-6" />, 
+      icon: <Activity className="w-3 h-3 md:w-4 md:h-4 lg:w-5 lg:h-5" />, 
       value: data.activityScore,
       rawValue: data.repoStats ? `${data.repoStats.recentCommits} recent` : undefined
     },
     { 
       id: 'techBreadth', 
       label: 'TECH BREADTH', 
-      icon: <Grid className="w-3 h-3 md:w-4 md:h-4 2xl:w-6 2xl:h-6" />, 
+      icon: <Grid className="w-3 h-3 md:w-4 md:h-4 lg:w-5 lg:h-5" />, 
       value: data.techBreadth,
       rawValue: data.languageStats ? `${data.languageStats.languageCount} langs` : undefined
     },
     { 
       id: 'impactScore', 
       label: 'IMPACT', 
-      icon: <Target className="w-3 h-3 md:w-4 md:h-4 2xl:w-6 2xl:h-6" />, 
+      icon: <Target className="w-3 h-3 md:w-4 md:h-4 lg:w-5 lg:h-5" />, 
       value: data.impactScore,
       rawValue: `${data.seniority}y exp, ${data.public_gists} gists`
     },
   ];
+
+  // Check if this is a "foil" card (4+ stats at 100)
+  const perfectStats = stats.filter(s => s.value === 100).length;
+  const isFoilCard = perfectStats >= 4;
 
   const handleMouseEnter = () => {
     if (!disabled && !isWinner && !isLoser) {
@@ -140,8 +144,15 @@ const Card: React.FC<CardProps> = ({ data, hidden, onSelectStat, disabled, isWin
   return (
     <div 
       onMouseEnter={handleMouseEnter}
-      className={containerClasses}
+      className={`${containerClasses} ${isFoilCard && !hidden ? 'foil-card' : ''}`}
     >
+      {/* FOIL BADGE for rare cards */}
+      {isFoilCard && !hidden && (
+        <div className="foil-badge font-pixel">
+          ★ {perfectStats}/6 ★
+        </div>
+      )}
+
       {/* VIGNETTE FOR LOSER */}
       {isLoser && (
         <div className="absolute inset-0 pointer-events-none z-20 bg-[radial-gradient(circle,transparent_40%,rgba(0,0,0,0.8)_100%)]"></div>
@@ -151,15 +162,15 @@ const Card: React.FC<CardProps> = ({ data, hidden, onSelectStat, disabled, isWin
       {isWinner && (
         <div className="absolute -top-12 md:-top-16 left-1/2 -translate-x-1/2 flex flex-col items-center animate-bounce z-50">
            <ArrowDown className="text-theme-success drop-shadow-lg w-10 h-10 md:w-12 md:h-12 2xl:w-20 2xl:h-20" fill="currentColor" />
-           <span className="font-pixel text-theme-success text-[10px] md:text-xs 2xl:text-xl bg-theme-bg px-2 border-2 border-theme-success rounded-theme">WINNER</span>
+           <span className="font-pixel text-theme-success text-[10px] md:text-xs lg:text-lg bg-theme-bg px-2 border-2 border-theme-success rounded-theme">WINNER</span>
         </div>
       )}
 
       {/* Header / Nameplate */}
       <div className={`h-10 md:h-12 2xl:h-20 flex shrink-0 items-center justify-between px-3 2xl:px-6 border-b-4 
         ${isWinner ? 'bg-theme-success/20 border-theme-success' : (isLoser ? 'bg-theme-danger/20 border-theme-danger' : 'bg-theme-bg border-theme-border')}`}>
-        <h3 className="font-pixel text-xs md:text-sm 2xl:text-2xl truncate text-theme-text w-full">{data.login}</h3>
-        {isWinner && <span className="font-pixel text-[10px] md:text-xs 2xl:text-xl text-theme-success animate-pulse text-glow">WIN</span>}
+        <h3 className="font-pixel text-xs md:text-sm lg:text-xl truncate text-theme-text w-full">{data.login}</h3>
+        {isWinner && <span className="font-pixel text-[10px] md:text-xs lg:text-lg text-theme-success animate-pulse text-glow">WIN</span>}
       </div>
 
       {/* Character Image Area - flexible shrink to prioritize stats on very small screens */}
@@ -171,14 +182,14 @@ const Card: React.FC<CardProps> = ({ data, hidden, onSelectStat, disabled, isWin
           className="w-full h-full object-cover image-pixelated"
           style={{ imageRendering: 'pixelated' }}
         />
-        <div className="absolute bottom-2 right-2 bg-theme-bg/90 px-2 py-1 text-[10px] 2xl:text-lg font-pixel text-theme-primary border border-theme-primary rounded-theme shadow-sm">
+        <div className="absolute bottom-2 right-2 bg-theme-bg/90 px-2 py-1 text-[10px] lg:text-base font-pixel text-theme-primary border border-theme-primary rounded-theme shadow-sm">
           LVL.{Math.min(99, Math.floor(data.public_repos / 5) + 1)}
         </div>
       </div>
 
       {/* Stats Block - Scrollable if content overflows */}
       <div className="flex-1 p-2 md:p-3 2xl:p-6 flex flex-col bg-theme-panel min-h-0 overflow-y-auto">
-        <div className="text-[10px] md:text-xs 2xl:text-lg font-retro text-theme-muted mb-2 uppercase tracking-wider border-b border-dashed border-theme-border pb-1 flex justify-between shrink-0">
+        <div className="text-[10px] md:text-xs lg:text-base font-retro text-theme-muted mb-2 uppercase tracking-wider border-b border-dashed border-theme-border pb-1 flex justify-between shrink-0">
           <span className="truncate max-w-[60%]">{data.name || 'Anonymous'}</span>
           <span>{data.created_at.substring(0,4)}</span>
         </div>
@@ -198,7 +209,7 @@ const Card: React.FC<CardProps> = ({ data, hidden, onSelectStat, disabled, isWin
                 disabled={disabled}
                 onMouseEnter={() => !disabled && soundManager.playHover()}
                 title={stat.rawValue}
-                className={`flex flex-col items-start justify-center px-2 2xl:px-4 py-1.5 2xl:py-3 border-2 transition-all duration-200 group rounded-theme relative overflow-hidden min-h-[60px] md:min-h-[70px] 2xl:min-h-[100px]
+                className={`flex flex-col items-start justify-center px-2 2xl:px-4 py-1.5 2xl:py-3 border-2 transition-all duration-200 group rounded-theme relative overflow-hidden min-h-[60px] md:min-h-[70px] lg:min-h-[80px]
                   ${disabled 
                     ? 'border-transparent cursor-default' 
                     : 'border-theme-border bg-theme-bg hover:bg-theme-primary/20 hover:border-theme-primary hover:scale-[1.02] cursor-pointer active:translate-y-0.5 hover:shadow-[0_0_8px_var(--primary)]'
@@ -214,15 +225,15 @@ const Card: React.FC<CardProps> = ({ data, hidden, onSelectStat, disabled, isWin
                   }
                 `}
               >
-                <span className={`flex items-center gap-1 font-pixel text-[9px] md:text-[10px] 2xl:text-base ${disabled && !isStatHighlighted ? 'text-theme-muted' : (isStatHighlighted ? 'text-theme-bg' : 'text-theme-text group-hover:text-theme-primary')}`}>
+                <span className={`flex items-center gap-1 font-pixel text-[9px] md:text-[10px] lg:text-sm ${disabled && !isStatHighlighted ? 'text-theme-muted' : (isStatHighlighted ? 'text-theme-bg' : 'text-theme-text group-hover:text-theme-primary')}`}>
                   {stat.icon}
                   <span className="truncate">{stat.label}</span>
                 </span>
-                <span className={`font-retro text-lg md:text-xl 2xl:text-4xl ${disabled && !isStatHighlighted ? 'text-theme-muted' : (isStatHighlighted ? 'text-theme-bg' : 'text-theme-text group-hover:text-theme-primary')} mt-0.5`}>
+                <span className={`font-retro text-lg md:text-xl lg:text-3xl ${disabled && !isStatHighlighted ? 'text-theme-muted' : (isStatHighlighted ? 'text-theme-bg' : 'text-theme-text group-hover:text-theme-primary')} mt-0.5`}>
                   {stat.value}
                 </span>
                 {stat.rawValue && !disabled && (
-                  <span className="text-[7px] md:text-[8px] 2xl:text-xs text-theme-muted/60 mt-0.5 leading-tight">
+                  <span className="text-[7px] md:text-[8px] lg:text-xs text-theme-muted/60 mt-0.5 leading-tight">
                     {stat.rawValue}
                   </span>
                 )}

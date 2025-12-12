@@ -642,7 +642,7 @@ const App: React.FC = () => {
   );
 
   const renderDeckSelection = () => (
-    <div className="flex flex-col items-center justify-center min-h-screen p-4 space-y-8 md:space-y-12 w-full max-w-6xl 2xl:max-w-7xl mx-auto relative">
+    <div className="flex flex-col items-center justify-center min-h-screen p-4 space-y-8 md:space-y-12 w-full max-w-6xl lg:max-w-6xl mx-auto relative">
       
       {/* Top Bar Controls */}
       <div className="absolute top-4 right-4 flex gap-4">
@@ -652,7 +652,7 @@ const App: React.FC = () => {
            title="Settings"
          >
            <div className="flex items-center gap-2">
-             <Settings className="w-6 h-6 2xl:w-10 2xl:h-10" />
+             <Settings className="w-6 h-6 lg:w-8 lg:h-8" />
            </div>
          </button>
 
@@ -665,21 +665,21 @@ const App: React.FC = () => {
            title="Back to Lobby"
          >
            <div className="flex items-center gap-2">
-             <X className="w-6 h-6 2xl:w-10 2xl:h-10" />
+             <X className="w-6 h-6 lg:w-8 lg:h-8" />
            </div>
          </button>
       </div>
 
-      <div className="text-center space-y-4 md:space-y-6 2xl:space-y-12 mt-12 md:mt-0">
-        <div className="inline-block p-4 md:p-6 2xl:p-10 border-4 border-theme-primary bg-theme-bg shadow-theme rounded-theme">
+      <div className="text-center space-y-4 md:space-y-6 lg:space-y-10 mt-12 md:mt-0">
+        <div className="inline-block p-4 md:p-6 lg:p-8 border-4 border-theme-primary bg-theme-bg shadow-theme rounded-theme">
              <Layers className="text-theme-primary drop-shadow-[0_0_10px_rgba(255,255,255,0.5)] w-12 h-12 md:w-16 md:h-16 2xl:w-32 2xl:h-32" />
         </div>
         
-        <h1 className="text-3xl md:text-6xl 2xl:text-8xl font-pixel tracking-tighter text-theme-text drop-shadow-[4px_4px_0_var(--shadow)] text-glow leading-none">
+        <h1 className="text-3xl md:text-6xl lg:text-6xl font-pixel tracking-tighter text-theme-text drop-shadow-[4px_4px_0_var(--shadow)] text-glow leading-none">
           SELECT_DECK
         </h1>
         
-        <p className="font-retro text-lg md:text-xl 2xl:text-3xl text-theme-muted tracking-widest uppercase">
+        <p className="font-retro text-lg md:text-xl lg:text-2xl text-theme-muted tracking-widest uppercase">
           {gameState.gameMode === 'TOURNAMENT' ? 'Tournament Mode' : 'Casual Mode'}
         </p>
       </div>
@@ -693,22 +693,22 @@ const App: React.FC = () => {
               setGameState(prev => ({ ...prev, selectedDeck: deck.id, status: 'LOBBY' }));
             }}
             onMouseEnter={() => soundManager.playHover()}
-            className="group relative bg-theme-panel p-6 md:p-8 2xl:p-12 border-4 border-theme-border hover:border-theme-primary active:translate-y-2 transition-all shadow-theme hover:shadow-glow text-left rounded-theme"
+            className="group relative bg-theme-panel p-6 md:p-8 lg:p-10 border-4 border-theme-border hover:border-theme-primary active:translate-y-2 transition-all shadow-theme hover:shadow-glow text-left rounded-theme"
           >
             <div className="flex items-start gap-4 md:gap-6">
-               <div className="text-5xl md:text-6xl 2xl:text-8xl group-hover:scale-110 transition-transform">
+               <div className="text-5xl md:text-6xl lg:text-6xl group-hover:scale-110 transition-transform">
                  {deck.icon}
                </div>
                <div className="flex-1">
-                 <h3 className="text-xl md:text-2xl 2xl:text-4xl font-pixel text-theme-text mb-2">{deck.name}</h3>
-                 <p className="font-retro text-sm md:text-base 2xl:text-xl text-theme-muted">{deck.description}</p>
+                 <h3 className="text-xl md:text-2xl lg:text-3xl font-pixel text-theme-text mb-2">{deck.name}</h3>
+                 <p className="font-retro text-sm md:text-base lg:text-lg text-theme-muted">{deck.description}</p>
                  <div className="mt-3 flex flex-wrap gap-1">
                    {deck.users.slice(0, 5).map((user, i) => (
-                     <span key={i} className="text-[10px] md:text-xs 2xl:text-sm font-retro bg-theme-bg text-theme-primary px-2 py-0.5 rounded-theme border border-theme-border">
+                     <span key={i} className="text-[10px] md:text-xs lg:text-xs font-retro bg-theme-bg text-theme-primary px-2 py-0.5 rounded-theme border border-theme-border">
                        {user}
                      </span>
                    ))}
-                   <span className="text-[10px] md:text-xs 2xl:text-sm font-retro text-theme-muted">
+                   <span className="text-[10px] md:text-xs lg:text-xs font-retro text-theme-muted">
                      +{deck.users.length - 5} more
                    </span>
                  </div>
@@ -718,7 +718,7 @@ const App: React.FC = () => {
         ))}
       </div>
       
-      <div className="font-retro text-theme-muted/40 text-xs md:text-sm 2xl:text-xl">
+      <div className="font-retro text-theme-muted/40 text-xs md:text-sm lg:text-lg">
         SELECT_YOUR_PREFERRED_STACK
       </div>
     </div>
@@ -728,7 +728,7 @@ const App: React.FC = () => {
     const hasSelectedDeck = gameState.selectedDeck !== null;
     
     return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-4 space-y-8 md:space-y-12 w-full max-w-4xl 2xl:max-w-7xl mx-auto relative">
+    <div className="flex flex-col items-center justify-center min-h-screen p-4 space-y-8 md:space-y-12 w-full max-w-4xl lg:max-w-6xl mx-auto relative">
       
       {/* Top Bar Controls */}
       <div className="absolute top-4 right-4 flex gap-4">
@@ -738,8 +738,8 @@ const App: React.FC = () => {
            title="Settings"
          >
            <div className="flex items-center gap-2">
-             <Settings className="w-6 h-6 2xl:w-10 2xl:h-10" />
-             <span className="font-pixel text-xs 2xl:text-xl hidden group-hover:block uppercase">SETTINGS</span>
+             <Settings className="w-6 h-6 lg:w-8 lg:h-8" />
+             <span className="font-pixel text-xs lg:text-lg hidden group-hover:block uppercase">SETTINGS</span>
            </div>
          </button>
 
@@ -748,8 +748,8 @@ const App: React.FC = () => {
            className="bg-theme-panel border-2 border-theme-border p-2 md:p-3 rounded-theme hover:border-theme-primary hover:text-theme-primary transition-all group shadow-theme"
          >
            <div className="flex items-center gap-2">
-             <span className="font-pixel text-xs 2xl:text-xl hidden group-hover:block">RULES</span>
-             <HelpCircle className="w-6 h-6 2xl:w-10 2xl:h-10" />
+             <span className="font-pixel text-xs lg:text-lg hidden group-hover:block">RULES</span>
+             <HelpCircle className="w-6 h-6 lg:w-8 lg:h-8" />
            </div>
          </button>
       </div>
@@ -759,32 +759,32 @@ const App: React.FC = () => {
           <div className="absolute top-20 left-1/2 -translate-x-1/2 w-full max-w-xl px-4 animate-bounce z-50">
               <div className="bg-theme-danger text-theme-bg p-4 border-4 border-theme-border shadow-theme rounded-theme flex items-center justify-center gap-3">
                   <AlertTriangle className="w-6 h-6" />
-                  <span className="font-pixel text-xs md:text-sm 2xl:text-lg text-center uppercase">{connectionError}</span>
+                  <span className="font-pixel text-xs md:text-sm lg:text-base text-center uppercase">{connectionError}</span>
               </div>
           </div>
       )}
 
-      <div className="text-center space-y-4 md:space-y-6 2xl:space-y-12 mt-12 md:mt-0">
-        <div className="inline-block p-4 md:p-6 2xl:p-10 border-4 border-theme-primary bg-theme-bg shadow-theme rounded-theme animate-bounce">
+      <div className="text-center space-y-4 md:space-y-6 lg:space-y-10 mt-12 md:mt-0">
+        <div className="inline-block p-4 md:p-6 lg:p-8 border-4 border-theme-primary bg-theme-bg shadow-theme rounded-theme animate-bounce">
              <Trophy className="text-theme-primary drop-shadow-[0_0_10px_rgba(255,255,255,0.5)] w-12 h-12 md:w-16 md:h-16 2xl:w-32 2xl:h-32" />
         </div>
         
-        <h1 className="text-4xl md:text-8xl 2xl:text-[10rem] font-pixel tracking-tighter text-theme-text drop-shadow-[4px_4px_0_var(--shadow)] flex flex-col md:flex-row items-center justify-center gap-4 text-glow leading-none">
+        <h1 className="text-4xl md:text-8xl lg:text-8xl font-pixel tracking-tighter text-theme-text drop-shadow-[4px_4px_0_var(--shadow)] flex flex-col md:flex-row items-center justify-center gap-4 text-glow leading-none">
           GitTrunfo
-          <span className="bg-theme-accent text-theme-bg px-4 py-1 text-2xl md:text-5xl 2xl:text-7xl -rotate-6 border-4 border-white shadow-lg rounded-theme">
+          <span className="bg-theme-accent text-theme-bg px-4 py-1 text-2xl md:text-5xl lg:text-5xl -rotate-6 border-4 border-white shadow-lg rounded-theme">
             PVP
           </span>
         </h1>
         
-        <p className="font-retro text-lg md:text-2xl 2xl:text-4xl text-theme-muted tracking-widest uppercase text-glow">
+        <p className="font-retro text-lg md:text-2xl lg:text-3xl text-theme-muted tracking-widest uppercase text-glow">
           {'>> Insert Coin to Initialize P2P Battle'}
         </p>
       </div>
 
       {/* Game Mode Selection */}
-      <div className="w-full max-w-xl 2xl:max-w-4xl bg-theme-bg p-1 border-4 border-theme-border shadow-theme rounded-theme mx-4">
+      <div className="w-full max-w-xl lg:max-w-3xl bg-theme-bg p-1 border-4 border-theme-border shadow-theme rounded-theme mx-4">
         <div className="bg-theme-panel p-4 md:p-6 flex flex-col gap-4 rounded-[calc(var(--radius)-4px)]">
-            <h3 className="font-pixel text-xs md:text-sm 2xl:text-xl text-theme-text flex items-center gap-2">
+            <h3 className="font-pixel text-xs md:text-sm lg:text-lg text-theme-text flex items-center gap-2">
               <Gamepad2 size={16} className="2xl:w-6 2xl:h-6" /> GAME_MODE:
             </h3>
             <div className="grid grid-cols-2 gap-4">
@@ -799,7 +799,7 @@ const App: React.FC = () => {
                     : 'border-theme-border bg-theme-bg hover:border-theme-text'
                 }`}
               >
-                <span className={`font-pixel text-xs md:text-sm 2xl:text-xl uppercase ${gameState.gameMode === 'CASUAL' ? 'text-theme-primary' : 'text-theme-muted'}`}>
+                <span className={`font-pixel text-xs md:text-sm lg:text-lg uppercase ${gameState.gameMode === 'CASUAL' ? 'text-theme-primary' : 'text-theme-muted'}`}>
                   Casual
                 </span>
               </button>
@@ -814,7 +814,7 @@ const App: React.FC = () => {
                     : 'border-theme-border bg-theme-bg hover:border-theme-text'
                 }`}
               >
-                <span className={`font-pixel text-xs md:text-sm 2xl:text-xl uppercase ${gameState.gameMode === 'TOURNAMENT' ? 'text-theme-primary' : 'text-theme-muted'}`}>
+                <span className={`font-pixel text-xs md:text-sm lg:text-lg uppercase ${gameState.gameMode === 'TOURNAMENT' ? 'text-theme-primary' : 'text-theme-muted'}`}>
                   Tournament
                 </span>
               </button>
@@ -823,9 +823,9 @@ const App: React.FC = () => {
       </div>
 
       {/* Deck Selection Display */}
-      <div className="w-full max-w-xl 2xl:max-w-4xl bg-theme-bg p-1 border-4 border-theme-border shadow-theme rounded-theme mx-4">
+      <div className="w-full max-w-xl lg:max-w-3xl bg-theme-bg p-1 border-4 border-theme-border shadow-theme rounded-theme mx-4">
         <div className="bg-theme-panel p-4 md:p-6 flex flex-col gap-4 rounded-[calc(var(--radius)-4px)]">
-            <h3 className="font-pixel text-xs md:text-sm 2xl:text-xl text-theme-text flex items-center gap-2">
+            <h3 className="font-pixel text-xs md:text-sm lg:text-lg text-theme-text flex items-center gap-2">
               <Layers size={16} className="2xl:w-6 2xl:h-6" /> SELECTED_DECK:
             </h3>
             {hasSelectedDeck ? (
@@ -833,10 +833,10 @@ const App: React.FC = () => {
                 <div className="flex items-center gap-3">
                   <span className="text-3xl">{gameState.selectedDeck ? DECK_CONFIGS[gameState.selectedDeck].icon : '⭐'}</span>
                   <div>
-                    <p className="font-pixel text-sm md:text-base 2xl:text-xl text-theme-primary">
+                    <p className="font-pixel text-sm md:text-base lg:text-lg text-theme-primary">
                       {gameState.selectedDeck ? DECK_CONFIGS[gameState.selectedDeck].name : 'Unknown'}
                     </p>
-                    <p className="font-retro text-xs md:text-sm 2xl:text-lg text-theme-muted">
+                    <p className="font-retro text-xs md:text-sm lg:text-base text-theme-muted">
                       {gameState.selectedDeck ? DECK_CONFIGS[gameState.selectedDeck].description : ''}
                     </p>
                   </div>
@@ -846,7 +846,7 @@ const App: React.FC = () => {
                     soundManager.playSelect();
                     setGameState(prev => ({ ...prev, status: 'DECK_SELECT' }));
                   }}
-                  className="bg-theme-primary text-theme-bg font-pixel px-4 py-2 2xl:px-6 2xl:py-3 2xl:text-xl rounded-theme hover:bg-theme-text hover:text-theme-primary transition-colors"
+                  className="bg-theme-primary text-theme-bg font-pixel px-4 py-2 lg:px-5 2xl:py-3 lg:text-lg rounded-theme hover:bg-theme-text hover:text-theme-primary transition-colors"
                 >
                   CHANGE
                 </button>
@@ -859,7 +859,7 @@ const App: React.FC = () => {
                 }}
                 className="p-4 bg-theme-bg border-2 border-dashed border-theme-border hover:border-theme-primary rounded-theme transition-all"
               >
-                <span className="font-pixel text-sm md:text-base 2xl:text-xl text-theme-muted hover:text-theme-primary">
+                <span className="font-pixel text-sm md:text-base lg:text-lg text-theme-muted hover:text-theme-primary">
                   {'>> CLICK TO SELECT DECK <<'}
                 </span>
               </button>
@@ -872,18 +872,18 @@ const App: React.FC = () => {
              onClick={hasSelectedDeck ? startSinglePlayer : undefined}
              onMouseEnter={() => hasSelectedDeck && soundManager.playHover()}
              disabled={!hasSelectedDeck}
-             className={`group relative bg-theme-panel p-6 md:p-8 2xl:p-16 border-4 border-theme-border transition-all shadow-theme text-left rounded-theme ${
+             className={`group relative bg-theme-panel p-6 md:p-8 lg:p-12 border-4 border-theme-border transition-all shadow-theme text-left rounded-theme ${
                hasSelectedDeck 
                  ? 'hover:border-theme-primary active:translate-y-2 hover:shadow-glow cursor-pointer' 
                  : 'opacity-50 cursor-not-allowed'
              }`}
         >
-          <div className="absolute top-0 left-0 bg-theme-primary text-theme-bg font-pixel text-[10px] md:text-xs 2xl:text-xl px-2 py-1 rounded-tl-[calc(var(--radius)-4px)]">1 PLAYER</div>
+          <div className="absolute top-0 left-0 bg-theme-primary text-theme-bg font-pixel text-[10px] md:text-xs lg:text-lg px-2 py-1 rounded-tl-[calc(var(--radius)-4px)]">1 PLAYER</div>
           <div className="flex items-center gap-4 md:gap-6 mb-2 md:mb-4 mt-2">
              <Cpu className={`text-theme-primary ${hasSelectedDeck ? 'group-hover:scale-110' : ''} transition-transform w-10 h-10 md:w-12 md:h-12 2xl:w-24 2xl:h-24`} />
              <div>
-               <h3 className="text-xl md:text-2xl 2xl:text-5xl font-pixel text-theme-text mb-1">VS CPU</h3>
-               <p className="font-retro text-base md:text-lg 2xl:text-2xl text-theme-muted">TRAINING_MODE.EXE</p>
+               <h3 className="text-xl md:text-2xl lg:text-4xl font-pixel text-theme-text mb-1">VS CPU</h3>
+               <p className="font-retro text-base md:text-lg lg:text-xl text-theme-muted">TRAINING_MODE.EXE</p>
              </div>
           </div>
         </button>
@@ -892,33 +892,33 @@ const App: React.FC = () => {
              onClick={hasSelectedDeck ? initHost : undefined}
              onMouseEnter={() => hasSelectedDeck && soundManager.playHover()}
              disabled={!hasSelectedDeck}
-             className={`group relative bg-theme-panel p-6 md:p-8 2xl:p-16 border-4 border-theme-border transition-all shadow-theme text-left rounded-theme ${
+             className={`group relative bg-theme-panel p-6 md:p-8 lg:p-12 border-4 border-theme-border transition-all shadow-theme text-left rounded-theme ${
                hasSelectedDeck 
                  ? 'hover:border-theme-success active:translate-y-2 hover:shadow-[0_0_15px_var(--success)] cursor-pointer' 
                  : 'opacity-50 cursor-not-allowed'
              }`}
         >
-          <div className="absolute top-0 left-0 bg-theme-success text-theme-bg font-pixel text-[10px] md:text-xs 2xl:text-xl px-2 py-1 rounded-tl-[calc(var(--radius)-4px)]">2 PLAYER</div>
+          <div className="absolute top-0 left-0 bg-theme-success text-theme-bg font-pixel text-[10px] md:text-xs lg:text-lg px-2 py-1 rounded-tl-[calc(var(--radius)-4px)]">2 PLAYER</div>
           <div className="flex items-center gap-4 md:gap-6 mb-2 md:mb-4 mt-2">
              <Wifi className={`text-theme-success ${hasSelectedDeck ? 'group-hover:scale-110' : ''} transition-transform w-10 h-10 md:w-12 md:h-12 2xl:w-24 2xl:h-24`} />
              <div>
-               <h3 className="text-xl md:text-2xl 2xl:text-5xl font-pixel text-theme-text mb-1">HOST GAME</h3>
-               <p className="font-retro text-base md:text-lg 2xl:text-2xl text-theme-muted">CREATE_LOBBY.BAT</p>
+               <h3 className="text-xl md:text-2xl lg:text-4xl font-pixel text-theme-text mb-1">HOST GAME</h3>
+               <p className="font-retro text-base md:text-lg lg:text-xl text-theme-muted">CREATE_LOBBY.BAT</p>
              </div>
           </div>
         </button>
       </div>
 
-      <div className="w-full max-w-xl 2xl:max-w-4xl bg-theme-bg p-1 border-4 border-theme-border shadow-theme rounded-theme mx-4">
+      <div className="w-full max-w-xl lg:max-w-3xl bg-theme-bg p-1 border-4 border-theme-border shadow-theme rounded-theme mx-4">
         <div className="bg-theme-panel p-4 md:p-6 flex flex-col gap-4 rounded-[calc(var(--radius)-4px)]">
-            <h3 className="font-pixel text-xs md:text-sm 2xl:text-xl text-theme-text flex items-center gap-2">
+            <h3 className="font-pixel text-xs md:text-sm lg:text-lg text-theme-text flex items-center gap-2">
               <User size={16} className="2xl:w-6 2xl:h-6" /> JOIN_EXISTING_LOBBY:
             </h3>
             <div className="flex gap-0">
               <input 
                 type="text" 
                 placeholder="PASTE_LOBBY_ID_HERE..." 
-                className="flex-1 bg-theme-bg border-2 border-r-0 border-theme-border p-3 md:p-4 font-retro text-lg md:text-xl 2xl:text-3xl text-theme-text focus:outline-none focus:border-theme-primary focus:border-r-2 placeholder:text-theme-muted/50 rounded-l-theme min-w-0"
+                className="flex-1 bg-theme-bg border-2 border-r-0 border-theme-border p-3 md:p-4 font-retro text-lg md:text-xl lg:text-2xl text-theme-text focus:outline-none focus:border-theme-primary focus:border-r-2 placeholder:text-theme-muted/50 rounded-l-theme min-w-0"
                 value={inputPeerId}
                 onChange={(e) => setInputPeerId(e.target.value)}
                 disabled={!hasSelectedDeck}
@@ -926,7 +926,7 @@ const App: React.FC = () => {
               <button 
                 onClick={hasSelectedDeck ? connectToPeer : undefined}
                 disabled={!hasSelectedDeck}
-                className={`bg-theme-primary text-theme-bg font-pixel font-bold px-4 md:px-8 2xl:px-12 2xl:text-2xl border-2 border-theme-primary rounded-r-theme ${
+                className={`bg-theme-primary text-theme-bg font-pixel font-bold px-4 md:px-8 lg:px-10 lg:text-xl border-2 border-theme-primary rounded-r-theme ${
                   hasSelectedDeck ? 'hover:bg-theme-text hover:text-theme-primary' : 'opacity-50 cursor-not-allowed'
                 } transition-colors`}
               >
@@ -937,18 +937,18 @@ const App: React.FC = () => {
       </div>
       
       {gameState.peerId && (
-        <div className="w-full max-w-xl 2xl:max-w-4xl border-4 border-dashed border-theme-primary/50 p-6 bg-theme-primary/10 flex flex-col items-center animate-fade-in text-center rounded-theme mx-4">
-           <p className="font-pixel text-xs 2xl:text-lg text-theme-primary mb-2 text-glow">{'>> YOUR_LOBBY_COORDINATES:'}</p>
+        <div className="w-full max-w-xl lg:max-w-3xl border-4 border-dashed border-theme-primary/50 p-6 bg-theme-primary/10 flex flex-col items-center animate-fade-in text-center rounded-theme mx-4">
+           <p className="font-pixel text-xs lg:text-base text-theme-primary mb-2 text-glow">{'>> YOUR_LOBBY_COORDINATES:'}</p>
            <div className="flex items-center gap-2 w-full justify-center bg-theme-bg border-2 border-theme-primary/30 p-4 mb-2 cursor-pointer hover:bg-theme-bg/80 rounded-theme shadow-theme"
                 onClick={() => { navigator.clipboard.writeText(gameState.peerId!); soundManager.playSelect(); }}>
-              <code className="text-theme-primary font-retro text-sm md:text-xl 2xl:text-3xl truncate break-all">{gameState.peerId}</code>
+              <code className="text-theme-primary font-retro text-sm md:text-xl lg:text-2xl truncate break-all">{gameState.peerId}</code>
               <Copy size={16} className="text-theme-primary shrink-0 2xl:w-6 2xl:h-6" />
            </div>
-           <p className="font-retro text-theme-primary/60 animate-pulse 2xl:text-xl">WAITING_FOR_CHALLENGER...</p>
+           <p className="font-retro text-theme-primary/60 animate-pulse lg:text-lg">WAITING_FOR_CHALLENGER...</p>
         </div>
       )}
       
-      <div className="font-retro text-theme-muted/40 text-xs md:text-sm 2xl:text-xl">v.2.1.0 THEME_ENGINE // {theme.toUpperCase()}</div>
+      <div className="font-retro text-theme-muted/40 text-xs md:text-sm lg:text-lg">v.2.1.0 THEME_ENGINE // {theme.toUpperCase()}</div>
     </div>
     );
   };
@@ -1042,7 +1042,7 @@ const App: React.FC = () => {
             {/* Player 1 Status */}
             <div className="flex flex-col md:flex-row items-start md:items-center gap-2 md:gap-6 w-1/3 md:w-auto">
                <div className="flex items-center gap-2">
-                 <div className="w-10 h-10 md:w-16 md:h-16 2xl:w-24 2xl:h-24 bg-theme-primary border-4 border-white shadow-theme flex items-center justify-center font-pixel font-bold text-theme-bg text-lg md:text-2xl 2xl:text-4xl rounded-theme">P1</div>
+                 <div className="w-10 h-10 md:w-16 md:h-16 2xl:w-24 2xl:h-24 bg-theme-primary border-4 border-white shadow-theme flex items-center justify-center font-pixel font-bold text-theme-bg text-lg md:text-2xl lg:text-3xl rounded-theme">P1</div>
                  <div className="md:hidden flex flex-col">
                    <div className="h-2 w-16 bg-theme-panel border border-theme-border relative overflow-hidden rounded-full">
                       <div className="absolute inset-0 bg-theme-primary w-full"></div>
@@ -1056,13 +1056,13 @@ const App: React.FC = () => {
                     <div className="absolute inset-0 bg-theme-primary" style={{ width: '100%' }}></div>
                     <div className="absolute inset-0 bg-[linear-gradient(90deg,transparent_50%,rgba(0,0,0,0.2)_50%)] bg-[length:4px_100%]"></div>
                  </div>
-                 <span className="font-pixel text-xs 2xl:text-xl text-theme-primary mt-1 text-glow">DECK: {gameState.myDeck.length + (gameState.currentMyCard ? 1 : 0)}</span>
+                 <span className="font-pixel text-xs lg:text-lg text-theme-primary mt-1 text-glow">DECK: {gameState.myDeck.length + (gameState.currentMyCard ? 1 : 0)}</span>
                </div>
             </div>
             
             {/* Center Status & Pot */}
             <div className="flex flex-col items-center z-10 w-1/3 md:w-auto pt-2 md:pt-0">
-               <div className={`px-2 md:px-6 py-1 md:py-2 border-2 md:border-4 border-b-4 md:border-b-8 font-pixel text-[10px] md:text-sm 2xl:text-2xl tracking-widest mb-1 md:mb-2 transition-all rounded-theme text-center whitespace-nowrap
+               <div className={`px-2 md:px-6 py-1 md:py-2 border-2 md:border-4 border-b-4 md:border-b-8 font-pixel text-[10px] md:text-sm lg:text-xl tracking-widest mb-1 md:mb-2 transition-all rounded-theme text-center whitespace-nowrap
                   ${gameState.turn === 'ME' 
                     ? 'bg-theme-success border-theme-success/50 text-theme-bg shadow-glow' 
                     : 'bg-theme-danger border-theme-danger/50 text-theme-bg'
@@ -1073,7 +1073,7 @@ const App: React.FC = () => {
                {/* POT DISPLAY STACK */}
                {gameState.pot.length > 0 && renderPotStack()}
 
-               {isWaitingForOpponent && <span className="font-retro text-[10px] md:text-xs 2xl:text-lg animate-pulse text-theme-muted mt-1">SYNCING...</span>}
+               {isWaitingForOpponent && <span className="font-retro text-[10px] md:text-xs lg:text-base animate-pulse text-theme-muted mt-1">SYNCING...</span>}
             </div>
 
             {/* Player 2 Status */}
@@ -1084,7 +1084,7 @@ const App: React.FC = () => {
                     <div className="absolute inset-0 bg-[linear-gradient(90deg,transparent_50%,rgba(0,0,0,0.2)_50%)] bg-[length:4px_100%]"></div>
                  </div>
                  <div className="flex justify-between w-full">
-                    <span className="font-pixel text-xs 2xl:text-xl text-theme-danger mt-1 text-glow">DECK: {gameState.opponentDeckCount}</span>
+                    <span className="font-pixel text-xs lg:text-lg text-theme-danger mt-1 text-glow">DECK: {gameState.opponentDeckCount}</span>
                     <div className="flex items-center gap-1.5 mt-1 bg-theme-bg border border-theme-border px-2 py-0.5 rounded-full shadow-sm">
                         <div className={`w-2 h-2 rounded-full ${connStatus.color} ${connStatus.pulse ? 'animate-pulse' : ''}`}></div>
                         <span className="font-pixel text-[8px] 2xl:text-xs text-theme-muted tracking-wider">{connStatus.label}</span>
@@ -1100,7 +1100,7 @@ const App: React.FC = () => {
                    <span className="font-pixel text-[10px] text-theme-danger leading-none mt-1">{gameState.opponentDeckCount}</span>
                  </div>
                  <div className="relative">
-                    <div className="w-10 h-10 md:w-16 md:h-16 2xl:w-24 2xl:h-24 bg-theme-danger border-4 border-white shadow-theme flex items-center justify-center font-pixel font-bold text-white text-lg md:text-2xl 2xl:text-4xl rounded-theme">P2</div>
+                    <div className="w-10 h-10 md:w-16 md:h-16 2xl:w-24 2xl:h-24 bg-theme-danger border-4 border-white shadow-theme flex items-center justify-center font-pixel font-bold text-white text-lg md:text-2xl lg:text-3xl rounded-theme">P2</div>
                      {/* Mobile Connection Indicator */}
                      <div className="md:hidden absolute -bottom-1.5 -right-1.5 bg-theme-bg border border-theme-border rounded-full p-1 shadow-sm flex items-center justify-center">
                         <div className={`w-2.5 h-2.5 rounded-full ${connStatus.color} ${connStatus.pulse ? 'animate-pulse' : ''}`}></div>
@@ -1119,7 +1119,7 @@ const App: React.FC = () => {
          </div>
 
          {/* Battle Arena */}
-         <div className="flex-1 flex flex-col md:flex-row items-center justify-start md:justify-center gap-6 md:gap-16 2xl:gap-32 relative py-4 md:py-8 min-h-0">
+         <div className="flex-1 flex flex-col md:flex-row items-center justify-start md:justify-center gap-6 md:gap-16 lg:gap-24 relative py-4 md:py-8 min-h-0">
             {/* Opponent Card (Top on Mobile) */}
             <div className="relative z-10 order-1 md:order-3">
                {gameState.currentOpponentCard ? (
@@ -1164,7 +1164,7 @@ const App: React.FC = () => {
              {/* Player Card (Bottom on Mobile) */}
             <div className="relative group z-10 order-3 md:order-1">
                {gameState.turn === 'ME' && !gameState.lastWinner && (
-                 <div className="absolute -top-8 md:-top-12 left-1/2 -translate-x-1/2 font-pixel text-theme-primary animate-bounce text-xs 2xl:text-xl whitespace-nowrap text-glow">
+                 <div className="absolute -top-8 md:-top-12 left-1/2 -translate-x-1/2 font-pixel text-theme-primary animate-bounce text-xs lg:text-lg whitespace-nowrap text-glow">
                     VV SELECT STAT VV
                  </div>
                )}
@@ -1186,7 +1186,7 @@ const App: React.FC = () => {
 
          {/* Commentary Box / Terminal Log */}
          {/* Desktop Log */}
-         <div className="hidden md:flex mt-8 2xl:mt-16 mb-4 justify-center">
+         <div className="hidden md:flex mt-8 lg:mt-12 mb-4 justify-center">
             <div className="w-full max-w-3xl 2xl:max-w-5xl bg-theme-bg border-4 border-theme-border p-1 shadow-theme rounded-theme">
                <div className="bg-theme-panel h-48 2xl:h-64 rounded-[calc(var(--radius)-4px)] flex flex-col overflow-hidden relative">
                   {/* Terminal Header */}
@@ -1194,11 +1194,11 @@ const App: React.FC = () => {
                      <div className="w-3 h-3 2xl:w-5 2xl:h-5 rounded-full bg-theme-danger"></div>
                      <div className="w-3 h-3 2xl:w-5 2xl:h-5 rounded-full bg-theme-primary"></div>
                      <div className="w-3 h-3 2xl:w-5 2xl:h-5 rounded-full bg-theme-success"></div>
-                     <span className="font-retro text-theme-muted/50 text-xs 2xl:text-lg ml-auto">BATTLE_LOG.EXE</span>
+                     <span className="font-retro text-theme-muted/50 text-xs lg:text-base ml-auto">BATTLE_LOG.EXE</span>
                   </div>
                   
                   {/* Log Output */}
-                  <div ref={logContainerRef} className="flex-1 p-4 overflow-y-auto font-retro text-lg 2xl:text-2xl space-y-1">
+                  <div ref={logContainerRef} className="flex-1 p-4 overflow-y-auto font-retro text-lg lg:text-xl space-y-1">
                     {gameState.log.map((event, i) => (
                       <div key={i} className={`${i === gameState.log.length - 1 ? 'text-theme-primary animate-pulse' : 'text-theme-text/70'}`}>
                         {event.message}
@@ -1245,8 +1245,8 @@ const App: React.FC = () => {
           {gameState.lastWinner === 'ME' ? 'VICTORY' : 'GAME OVER'}
         </h1>
         
-        <div className="z-10 bg-theme-panel p-8 2xl:p-16 border-4 border-theme-text shadow-theme text-center max-w-lg 2xl:max-w-4xl rounded-theme">
-          <p className="font-retro text-xl md:text-2xl 2xl:text-5xl text-theme-text mb-6 2xl:mb-12 uppercase tracking-widest border-b-2 border-dashed border-theme-border pb-4">
+        <div className="z-10 bg-theme-panel p-8 lg:p-12 border-4 border-theme-text shadow-theme text-center max-w-lg lg:max-w-3xl rounded-theme">
+          <p className="font-retro text-xl md:text-2xl lg:text-4xl text-theme-text mb-6 2xl:mb-12 uppercase tracking-widest border-b-2 border-dashed border-theme-border pb-4">
             {connectionError ? (
                <span className="text-theme-danger animate-pulse flex items-center justify-center gap-2">
                    <AlertTriangle className="w-8 h-8" /> {connectionError}
@@ -1258,13 +1258,13 @@ const App: React.FC = () => {
           
           <button 
             onClick={resetGame}
-            className="w-full bg-theme-primary text-theme-bg font-pixel py-4 2xl:py-8 2xl:text-4xl border-b-8 border-theme-border hover:border-b-4 hover:translate-y-1 active:border-b-0 active:translate-y-2 transition-all flex items-center justify-center gap-4 rounded-theme"
+            className="w-full bg-theme-primary text-theme-bg font-pixel py-4 lg:py-6 lg:text-3xl border-b-8 border-theme-border hover:border-b-4 hover:translate-y-1 active:border-b-0 active:translate-y-2 transition-all flex items-center justify-center gap-4 rounded-theme"
           >
             <RotateCcw className="w-6 h-6 2xl:w-12 2xl:h-12" /> INSERT COIN (RESTART)
           </button>
         </div>
         
-        <div className="font-retro text-theme-muted/30 mt-8 animate-pulse text-sm md:text-base 2xl:text-2xl">PRESS RESTART TO CONTINUE...</div>
+        <div className="font-retro text-theme-muted/30 mt-8 animate-pulse text-sm md:text-base lg:text-xl">PRESS RESTART TO CONTINUE...</div>
     </div>
   );
 
