@@ -259,7 +259,7 @@ const fetchRepoStats = async (username: string): Promise<GitHubRepoStats> => {
 };
 
 // Calculate strategic attributes from enriched data
-const calculateStrategicAttributes = (user: GithubUser, repoStats: GitHubRepoStats, languageStats: GitHubLanguageStats): Partial<CardData> => {
+const calculateStrategicAttributes = (user: GithubUser, repoStats: GitHubRepoStats, languageStats: GitHubLanguageStats) => {
   // 1. Followers Score (log scale for heavy tail)
   const followersScore = normalizeLogScale(user.followers, NORMALIZATION_RANGES.followers.min, NORMALIZATION_RANGES.followers.max);
   
