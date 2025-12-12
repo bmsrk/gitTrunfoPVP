@@ -710,7 +710,7 @@ const App: React.FC = () => {
               soundManager.playSelect();
               setGameState(prev => ({ ...prev, selectedDeck: deck.id, status: 'LOBBY' }));
             }}
-            onMouseEnter={() => soundManager.playHover()}
+            onPointerEnter={() => soundManager.playHover()}
             className="group relative bg-theme-panel p-6 md:p-8 lg:p-10 border-4 border-theme-border hover:border-theme-primary active:translate-y-2 transition-all shadow-theme hover:shadow-glow text-left rounded-theme"
           >
             <div className="flex items-start gap-4 md:gap-6">
@@ -888,7 +888,7 @@ const App: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 w-full px-4">
         <button 
              onClick={hasSelectedDeck ? startSinglePlayer : undefined}
-             onMouseEnter={() => hasSelectedDeck && soundManager.playHover()}
+             onPointerEnter={() => hasSelectedDeck && soundManager.playHover()}
              disabled={!hasSelectedDeck}
              className={`group relative bg-theme-panel p-6 md:p-8 lg:p-12 border-4 border-theme-border transition-all shadow-theme text-left rounded-theme ${
                hasSelectedDeck 
@@ -908,7 +908,7 @@ const App: React.FC = () => {
 
         <button 
              onClick={hasSelectedDeck ? initHost : undefined}
-             onMouseEnter={() => hasSelectedDeck && soundManager.playHover()}
+             onPointerEnter={() => hasSelectedDeck && soundManager.playHover()}
              disabled={!hasSelectedDeck}
              className={`group relative bg-theme-panel p-6 md:p-8 lg:p-12 border-4 border-theme-border transition-all shadow-theme text-left rounded-theme ${
                hasSelectedDeck 

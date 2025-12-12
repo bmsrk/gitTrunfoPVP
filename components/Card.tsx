@@ -15,6 +15,10 @@ interface CardProps {
   processingLabel?: string | null;
 }
 
+// 3D Tilt constants
+const FOIL_TILT_MULTIPLIER = 10; // Degrees of tilt for foil cards
+const NORMAL_TILT_MULTIPLIER = 5; // Degrees of tilt for normal cards
+
 const Card: React.FC<CardProps> = ({ data, hidden, onSelectStat, disabled, isWinner, isLoser, animationType = 'enter', highlightStat, processingLabel }) => {
   const cardRef = useRef<HTMLDivElement>(null);
   
@@ -156,7 +160,7 @@ const Card: React.FC<CardProps> = ({ data, hidden, onSelectStat, disabled, isWin
     const centerY = rect.height / 2;
     
     // Stronger tilt for foil cards, subtle for normal cards
-    const tiltMultiplier = isFoilCard ? 10 : 5;
+    const tiltMultiplier = isFoilCard ? FOIL_TILT_MULTIPLIER : NORMAL_TILT_MULTIPLIER;
     const rotateX = ((y - centerY) / centerY) * -tiltMultiplier;
     const rotateY = ((x - centerX) / centerX) * tiltMultiplier;
     
@@ -175,7 +179,7 @@ const Card: React.FC<CardProps> = ({ data, hidden, onSelectStat, disabled, isWin
   return (
     <div 
       ref={cardRef}
-      onMouseEnter={handleMouseEnter}
+      onPointerEnter={handleMouseEnter}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       className={`${containerClasses} ${isFoilCard && !hidden ? 'foil-card' : ''}`}
@@ -241,7 +245,7 @@ const Card: React.FC<CardProps> = ({ data, hidden, onSelectStat, disabled, isWin
                   }
                 }}
                 disabled={disabled}
-                onMouseEnter={() => !disabled && soundManager.playHover()}
+                onPointerEnter={() => !disabled && soundManager.playHover()}
                 title={stat.rawValue}
                 className={`flex flex-col items-start justify-center px-2 2xl:px-4 py-1.5 2xl:py-3 border-2 transition-all duration-200 group rounded-theme relative overflow-hidden min-h-[60px] md:min-h-[70px] lg:min-h-[80px]
                   ${disabled 
