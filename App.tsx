@@ -136,6 +136,12 @@ const App: React.FC = () => {
     const peer = initializePeer();
     
     const proceed = () => {
+        // Check for self-connect
+        if (inputPeerId === stateRef.current.peerId) {
+          setConnectionError("Cannot connect to yourself! Please use a different lobby ID.");
+          return;
+        }
+        
         setGameState(prev => ({ 
             ...prev, 
             mode: 'CLIENT', 
@@ -260,7 +266,11 @@ const App: React.FC = () => {
       turn: 'ME',
       lastWinner: null,
       lastStat: null,
-      log: ['> System Initialized', '> CPU Opponent Loaded', `> Deck: ${gameState.selectedDeck || 'Standard'}`],
+      log: [
+        { type: 'SYSTEM', message: '> System Initialized' },
+        { type: 'SYSTEM', message: '> CPU Opponent Loaded' },
+        { type: 'GAME_START', message: `> Deck: ${gameState.selectedDeck || 'Standard'}`, details: { deckType: gameState.selectedDeck || 'Standard' } }
+      ],
     }));
 
     (window as any).cpuDeck = deck2;
@@ -284,7 +294,11 @@ const App: React.FC = () => {
           turn: msg.payload.turn,
           selectedDeck: msg.payload.deckType || prev.selectedDeck,
           gameMode: msg.payload.gameMode || prev.gameMode,
-          log: ['> Connection Established', '> Game Started', `> Deck: ${msg.payload.deckType || 'Standard'}`]
+          log: [
+            { type: 'SYSTEM', message: '> Connection Established' },
+            { type: 'GAME_START', message: '> Game Started' },
+            { type: 'GAME_START', message: `> Deck: ${msg.payload.deckType || 'Standard'}`, details: { deckType: msg.payload.deckType || 'Standard' } }
+          ]
         }));
         soundManager.playStart();
         break;
@@ -361,12 +375,25 @@ const App: React.FC = () => {
       winner === 'ME' ? 'Player' : 'Opponent'
     );
 
+    // Create detailed battle log event
+    const statLabel = stat.replace('Score', '').replace(/([A-Z])/g, ' $1').trim().toUpperCase();
+    const battleLogEvent = {
+      type: 'BATTLE' as const,
+      message: `> ${statLabel}: ${myCard.login}(${myValue}) vs ${oppCard.login}(${oppValue}) → ${winner === 'ME' ? 'WIN' : (winner === 'DRAW' ? 'DRAW' : 'LOSS')}`,
+      details: {
+        stat,
+        myValue,
+        oppValue,
+        winner
+      }
+    };
+
     setGameState(prev => ({
       ...prev,
       lastWinner: winner,
       lastStat: stat,
       aiCommentary: commentary,
-      log: [...prev.log, `> ${stat}: ${myValue} vs ${oppValue} -> ${winner === 'ME' ? 'WIN' : (winner === 'DRAW' ? 'DRAW' : 'LOSS')}`]
+      log: [...prev.log, battleLogEvent]
     }));
 
     setTimeout(() => nextRound(winner, myCard, oppCard), 3500);
@@ -472,7 +499,7 @@ const App: React.FC = () => {
        const timer = setTimeout(() => {
            const cpuCard = (window as any).cpuCurrentCard as CardData;
            if(!cpuCard) return;
-           const stats: StatType[] = ['public_repos', 'followers', 'following', 'public_gists', 'seniority'];
+           const stats: StatType[] = ['followersScore', 'repositoriesScore', 'influenceScore', 'activityScore', 'techBreadth'];
            const randomStat = stats[Math.floor(Math.random() * stats.length)];
            const myCard = stateRef.current.currentMyCard!;
            processTurnResult(randomStat, myCard, cpuCard, 'THEM');
@@ -519,8 +546,24 @@ const App: React.FC = () => {
                       <Swords size={24} className="text-theme-success" />
                    </div>
                    <div>
-                      <h3 className="font-pixel text-theme-text text-sm mb-1">1. BATTLE</h3>
-                      <p>Choose the stat with the <strong className="text-theme-primary">HIGHEST VALUE</strong> on your card.</p>
+                      <h3 className="font-pixel text-theme-text text-sm mb-1">1. STRATEGIC ATTRIBUTES</h3>
+                      <p>Each card has 5 normalized attributes (0-100 scale):</p>
+                      <ul className="text-sm md:text-base mt-2 space-y-1 list-disc list-inside">
+                        <li><strong>Followers:</strong> Community influence</li>
+                        <li><strong>Repos:</strong> Project portfolio size</li>
+                        <li><strong>Influence:</strong> Stars + forks aggregate</li>
+                        <li><strong>Activity:</strong> Recent commits + recency</li>
+                        <li><strong>Tech Breadth:</strong> Language diversity</li>
+                      </ul>
+                   </div>
+                </div>
+                <div className="flex gap-4">
+                   <div className="w-12 h-12 bg-theme-bg border-2 border-theme-border flex items-center justify-center shrink-0 rounded-theme">
+                      <Trophy size={24} className="text-theme-primary" />
+                   </div>
+                   <div>
+                      <h3 className="font-pixel text-theme-text text-sm mb-1">2. BATTLE</h3>
+                      <p>Choose the attribute with the <strong className="text-theme-primary">HIGHEST SCORE</strong> on your card. Higher score wins!</p>
                    </div>
                 </div>
                 <div className="flex gap-4">
@@ -531,6 +574,11 @@ const App: React.FC = () => {
                       <h3 className="font-pixel text-theme-text text-sm mb-1">3. THE BUFFER</h3>
                       <p>Draws go to the <span className="text-theme-accent">BUFFER</span>. Next winner takes ALL.</p>
                    </div>
+                </div>
+                <div className="bg-theme-bg/50 p-3 rounded-theme border-2 border-theme-border">
+                   <p className="text-sm md:text-base">
+                      <span className="text-theme-primary">TIP:</span> Different decks favor different attributes! Corporate decks excel at Followers, Web decks at Activity, and Esoteric decks at Tech Breadth.
+                   </p>
                 </div>
              </div>
              <button 
@@ -1150,9 +1198,9 @@ const App: React.FC = () => {
                   
                   {/* Log Output */}
                   <div ref={logContainerRef} className="flex-1 p-4 overflow-y-auto font-retro text-lg 2xl:text-2xl space-y-1">
-                    {gameState.log.map((line, i) => (
+                    {gameState.log.map((event, i) => (
                       <div key={i} className={`${i === gameState.log.length - 1 ? 'text-theme-primary animate-pulse' : 'text-theme-text/70'}`}>
-                        {line}
+                        {event.message}
                       </div>
                     ))}
                     <div className="text-theme-primary animate-pulse">_</div>
@@ -1172,9 +1220,9 @@ const App: React.FC = () => {
                     <span className="ml-2">BATTLE LOG</span>
                  </button>
                  <div className="h-48 p-4 overflow-y-auto font-retro text-sm space-y-1 bg-theme-bg">
-                    {gameState.log.map((line, i) => (
+                    {gameState.log.map((event, i) => (
                       <div key={i} className={`${i === gameState.log.length - 1 ? 'text-theme-primary' : 'text-theme-text/70'}`}>
-                        {line}
+                        {event.message}
                       </div>
                     ))}
                  </div>

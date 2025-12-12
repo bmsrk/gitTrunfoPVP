@@ -2,9 +2,23 @@
 
 ## Game Overview
 
-GitTrunfo P2P is a competitive card game where players battle using GitHub developer profiles. Each card represents a real GitHub user with statistics like repositories, followers, and years of experience. The goal is to win all your opponent's cards by choosing the best stats.
+GitTrunfo P2P is a competitive card game where players battle using GitHub developer profiles. Each card represents a real GitHub user with **strategic attributes** calculated from their GitHub activity. Unlike raw statistics, these normalized attributes (0-100 scale) create balanced, strategic gameplay. The goal is to win all your opponent's cards by choosing your best attributes.
 
 ## Game Modes
+
+### Deck Types
+
+Choose from 5 specialized deck types, each with unique strategic weights:
+
+| Deck | Icon | Focus | Best Attributes |
+|------|------|-------|-----------------|
+| **Standard** | ⭐ | Balanced gameplay | All attributes equally weighted |
+| **Web** | 🌐 | Modern web developers | Activity (1.3x), Tech Breadth (1.2x) |
+| **Legacy Languages** | 🏛️ | System programming veterans | Repos (1.2x), Seniority |
+| **Esoteric** | 🔮 | Niche & emerging tech | Tech Breadth (1.4x), Influence (1.3x) |
+| **Corporate** | 🏢 | DevRel & community leaders | Followers (1.5x), Influence (1.4x) |
+
+**Deck Weights**: Different decks multiply certain attributes, making them stronger. For example, Corporate decks have 50% higher follower scores!
 
 ### Single Player (vs CPU)
 - Practice against a computer opponent
@@ -59,17 +73,23 @@ GitTrunfo P2P is a competitive card game where players battle using GitHub devel
 
 #### Stat Comparison
 
-Each card has 5 statistics:
+Each card has 5 **strategic attributes** (normalized 0-100 scale):
 
-| Stat | Description | Strategy |
-|------|-------------|----------|
-| **REPOS** | Public repositories | Best for prolific developers |
-| **FOLLOWERS** | GitHub followers | Best for influencers/educators |
-| **FOLLOWING** | Accounts followed | Variable, sometimes surprisingly high |
-| **GISTS** | Public gists | Niche stat, good for tie-breakers |
-| **EXP. YEARS** | Years since account creation | Best for veteran developers |
+| Attribute | Description | Based On | Strategy |
+|-----------|-------------|----------|----------|
+| **FOLLOWERS** | Community influence | Follower count (log-scaled) | Best for popular influencers and educators |
+| **REPOS** | Project portfolio | Repository count (log-scaled) | Best for prolific developers |
+| **INFLUENCE** | Code impact | Total stars + forks across all repos | Best for maintainers of popular projects |
+| **ACTIVITY** | Recent contributions | Recent commits (90 days) + recency bonus | Best for actively contributing developers |
+| **TECH BREADTH** | Technology diversity | Number of different languages used | Best for polyglot developers |
 
-**Choose wisely!** Always pick your highest stat, but consider that different developers excel in different areas.
+**Strategic Attributes System:**
+- All attributes are **normalized** to 0-100 scale for fair comparison
+- Uses **log scaling** for followers, repos, and influence (prevents outliers from dominating)
+- **Activity Score** combines recent commits with a recency decay (favor active developers)
+- **Tech Breadth** measures language diversity (rewards polyglot programmers)
+
+**Choose wisely!** Always pick your highest attribute, but remember that different deck types favor different attributes.
 
 #### Winning & Losing Rounds
 
@@ -158,17 +178,25 @@ When rounds end in a draw:
 ## Tips & Strategy
 
 ### General Strategy
-1. **Know Your Cards**: Each developer has different strengths
-2. **Think Ahead**: Remember which stats tend to be high/low
-3. **Risk vs Reward**: Your second-best stat might still win
-4. **Buffer Awareness**: Don't underestimate draw scenarios
+1. **Understand Normalization**: All scores are 0-100, so a 75 in FOLLOWERS beats a 70 in REPOS
+2. **Know Your Deck**: Corporate decks excel at Followers, Web decks at Activity
+3. **Read the Tooltips**: Hover over attributes to see raw values (stars, actual follower count, etc.)
+4. **Balance is Key**: With normalization, no single attribute dominates every match
+5. **Buffer Awareness**: Don't underestimate draw scenarios
 
-### Stat Trends
-- **REPOS**: Usually the most reliable high stat
-- **FOLLOWERS**: Very variable, can be surprisingly low for good devs
-- **FOLLOWING**: Often low (100-300), occasionally very high
-- **GISTS**: Usually the lowest stat (0-50)
-- **EXP. YEARS**: Stable and predictable, good for safe plays
+### Attribute Trends (Normalized Scores)
+- **FOLLOWERS**: High variance (10-95) - risky but rewarding for influencers
+- **REPOS**: Consistent (40-80) - reliable middle ground
+- **INFLUENCE**: Spiky (20-90) - very high for popular project maintainers
+- **ACTIVITY**: Variable (25-85) - favors currently active developers
+- **TECH BREADTH**: Moderate (30-70) - rewards polyglot programmers
+
+### Deck-Specific Strategy
+- **Corporate Deck**: Prioritize Followers and Influence (50% bonus!)
+- **Web Deck**: Favor Activity and Tech Breadth (modern tech stack)
+- **Legacy Deck**: Repos and seniority (veteran developers)
+- **Esoteric Deck**: Tech Breadth and Influence (niche language experts)
+- **Standard Deck**: No bias - balanced gameplay
 
 ### Single Player Tips
 - CPU chooses randomly, so any high stat works
@@ -242,25 +270,51 @@ When rounds end in a draw:
 - Spam connections to busy hosts
 - Complain about "lucky" draws (it's part of the game)
 
-## Advanced: Probability & Math
+## Advanced: Scoring System & Math
 
-### Expected Values
+### How Attributes Are Calculated
 
-Average stat ranges (approximate):
-- REPOS: 20-150
-- FOLLOWERS: 50-2000
-- FOLLOWING: 10-100
-- GISTS: 0-30
-- EXP. YEARS: 5-15
+**1. Data Enrichment:**
+- Fetches user profile, repositories, commit activity, and language stats
+- Caches results for 15 minutes to respect GitHub API limits
+- Falls back to deterministic mock data if API unavailable
 
-**Statistical Note**: FOLLOWERS has the highest variance, making it risky but potentially rewarding.
+**2. Normalization (0-100 scale):**
+- **Log Scaling**: Used for followers, repos, and influence (heavy-tail distributions)
+  - Formula: `normalized = (log10(value + 1) - log10(min + 1)) / (log10(max + 1) - log10(min + 1)) * 100`
+  - Prevents mega-stars like Linus Torvalds from having unbeatable scores
+- **Linear Scaling**: Used for language count and activity
+  - Formula: `normalized = (value - min) / (max - min) * 100`
+
+**3. Reference Ranges:**
+- Followers: 0-10,000 → normalized 0-100
+- Repos: 0-500 → normalized 0-100
+- Influence (stars+forks): 0-50,000 → normalized 0-100
+- Activity (recent commits): 0-50 → normalized 0-100 (+ recency bonus)
+- Tech Breadth (languages): 0-20 → normalized 0-100
+
+**4. Deck Weight Multipliers:**
+Different decks apply multipliers to certain attributes:
+- Corporate: Followers ×1.5, Influence ×1.4
+- Web: Activity ×1.3, Tech Breadth ×1.2
+- Esoteric: Tech Breadth ×1.4, Influence ×1.3
+- Legacy: Repos ×1.2
+- Standard: All ×1.0 (balanced)
+
+### Expected Score Ranges
+
+After normalization, typical score distributions:
+- **Top 10% developers**: 75-95 in their specialty
+- **Average developers**: 40-60 across most attributes
+- **Niche specialists**: 80+ in 1-2 attributes, 20-40 in others
 
 ### Win Probability
 
 Assuming random card distribution:
-- Equal skill: ~50% win rate
-- Stat knowledge: ~60% win rate
-- Perfect play: ~70% win rate (can't control card draws)
+- Equal skill + deck knowledge: ~55% win rate
+- Understanding normalization: ~65% win rate
+- Deck-attribute synergy: ~75% win rate
+- Perfect play: ~80% win rate (still luck-dependent on card draws)
 
 ---
 
