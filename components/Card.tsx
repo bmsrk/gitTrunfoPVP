@@ -15,9 +15,9 @@ interface CardProps {
   processingLabel?: string | null;
 }
 
-// 3D Tilt constants
-const FOIL_TILT_MULTIPLIER = 10; // Degrees of tilt for foil cards
-const NORMAL_TILT_MULTIPLIER = 5; // Degrees of tilt for normal cards
+// 3D Tilt constants - Enhanced for better float effect
+const FOIL_TILT_MULTIPLIER = 12; // Degrees of tilt for foil cards (increased)
+const NORMAL_TILT_MULTIPLIER = 6; // Degrees of tilt for normal cards (increased)
 
 const Card: React.FC<CardProps> = ({ data, hidden, onSelectStat, disabled, isWinner, isLoser, animationType = 'enter', highlightStat, processingLabel }) => {
   const cardRef = useRef<HTMLDivElement>(null);
@@ -30,7 +30,7 @@ const Card: React.FC<CardProps> = ({ data, hidden, onSelectStat, disabled, isWin
   const containerClasses = `
     w-[85vw] max-w-[300px] md:w-72 lg:w-80
     min-h-[400px] max-h-[85vh] md:min-h-[420px] md:max-h-none
-    bg-theme-panel border-4 flex flex-col relative transition-all duration-300 rounded-theme overflow-hidden box-border
+    bg-theme-panel border-4 flex flex-col relative transition-all duration-500 ease-out rounded-theme overflow-hidden box-border
     ${!hidden ? animationClass : ''} 
     ${isWinner ? 'border-theme-success animate-glow-pulse scale-105 z-10' : ''}
     ${isLoser ? 'border-theme-danger opacity-80 grayscale scale-95' : 'border-theme-border shadow-theme'}
