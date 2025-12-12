@@ -28,8 +28,8 @@ const Card: React.FC<CardProps> = ({ data, hidden, onSelectStat, disabled, isWin
   const animationClass = animationType === 'reveal' ? 'animate-card-reveal' : 'animate-card-enter';
 
   const containerClasses = `
-    w-[85vw] max-w-[320px] md:w-80 lg:w-96
-    h-[60vh] min-h-[480px] md:h-[36rem] lg:h-[40rem]
+    w-[85vw] max-w-[300px] md:w-72 lg:w-80
+    min-h-[400px] max-h-[85vh] md:min-h-[420px] md:max-h-none
     bg-theme-panel border-4 flex flex-col relative transition-all duration-300 rounded-theme overflow-hidden box-border
     ${!hidden ? animationClass : ''} 
     ${isWinner ? 'border-theme-success animate-glow-pulse scale-105 z-10' : ''}
@@ -204,15 +204,15 @@ const Card: React.FC<CardProps> = ({ data, hidden, onSelectStat, disabled, isWin
         </div>
       )}
 
-      {/* Header / Nameplate */}
-      <div className={`h-10 md:h-12 2xl:h-20 flex shrink-0 items-center justify-between px-3 2xl:px-6 border-b-4 
+      {/* Header / Nameplate - Compact */}
+      <div className={`h-8 md:h-10 2xl:h-16 flex shrink-0 items-center justify-between px-2.5 md:px-3 2xl:px-5 border-b-4 
         ${isWinner ? 'bg-theme-success/20 border-theme-success' : (isLoser ? 'bg-theme-danger/20 border-theme-danger' : 'bg-theme-bg border-theme-border')}`}>
-        <h3 className="font-pixel text-xs md:text-sm lg:text-xl truncate text-theme-text w-full">{data.login}</h3>
-        {isWinner && <span className="font-pixel text-[10px] md:text-xs lg:text-lg text-theme-success animate-pulse text-glow">WIN</span>}
+        <h3 className="font-pixel text-[10px] md:text-xs lg:text-lg truncate text-theme-text w-full">{data.login}</h3>
+        {isWinner && <span className="font-pixel text-[9px] md:text-[10px] lg:text-base text-theme-success animate-pulse text-glow">WIN</span>}
       </div>
 
-      {/* Character Image Area - flexible shrink to prioritize stats on very small screens */}
-      <div className="h-32 md:h-40 2xl:h-64 shrink-1 min-h-[100px] bg-[#000] relative border-b-4 border-theme-border group">
+      {/* Character Image Area - Compact */}
+      <div className="h-24 md:h-32 lg:h-36 2xl:h-48 shrink-0 bg-[#000] relative border-b-4 border-theme-border group">
         <div className="absolute inset-0 bg-gradient-to-t from-theme-panel to-transparent opacity-50"></div>
         <img 
           src={data.avatar_url} 
@@ -220,19 +220,19 @@ const Card: React.FC<CardProps> = ({ data, hidden, onSelectStat, disabled, isWin
           className="w-full h-full object-cover image-pixelated"
           style={{ imageRendering: 'pixelated' }}
         />
-        <div className="absolute bottom-2 right-2 bg-theme-bg/90 px-2 py-1 text-[10px] lg:text-base font-pixel text-theme-primary border border-theme-primary rounded-theme shadow-sm">
+        <div className="absolute bottom-1.5 right-1.5 bg-theme-bg/90 px-1.5 py-0.5 text-[9px] lg:text-sm font-pixel text-theme-primary border border-theme-primary rounded-theme shadow-sm">
           LVL.{Math.min(99, Math.floor(data.public_repos / 5) + 1)}
         </div>
       </div>
 
-      {/* Stats Block - Scrollable if content overflows */}
-      <div className="flex-1 p-2 md:p-3 2xl:p-6 flex flex-col bg-theme-panel min-h-0 overflow-y-auto">
-        <div className="text-[10px] md:text-xs lg:text-base font-retro text-theme-muted mb-2 uppercase tracking-wider border-b border-dashed border-theme-border pb-1 flex justify-between shrink-0">
+      {/* Stats Block - Better spacing and padding */}
+      <div className="flex-1 p-2.5 md:p-3 lg:p-4 2xl:p-5 flex flex-col bg-theme-panel min-h-0 overflow-y-auto">
+        <div className="text-[9px] md:text-[10px] lg:text-sm font-retro text-theme-muted mb-1.5 md:mb-2 uppercase tracking-wider border-b border-dashed border-theme-border pb-1 flex justify-between shrink-0">
           <span className="truncate max-w-[60%]">{data.name || 'Anonymous'}</span>
           <span>{data.created_at.substring(0,4)}</span>
         </div>
         
-        <div className="flex-1 grid grid-cols-3 gap-2 content-start pb-1">
+        <div className="flex-1 grid grid-cols-3 gap-1.5 md:gap-2 content-start pb-1">
           {stats.map((stat, index) => {
              const isStatHighlighted = highlightStat === stat.id;
              return (
@@ -247,7 +247,7 @@ const Card: React.FC<CardProps> = ({ data, hidden, onSelectStat, disabled, isWin
                 disabled={disabled}
                 onPointerEnter={() => !disabled && soundManager.playHover()}
                 title={stat.rawValue}
-                className={`flex flex-col items-start justify-center px-2 2xl:px-4 py-1.5 2xl:py-3 border-2 transition-all duration-200 group rounded-theme relative overflow-hidden min-h-[60px] md:min-h-[70px] lg:min-h-[80px]
+                className={`flex flex-col items-start justify-center px-1.5 md:px-2 lg:px-2.5 2xl:px-3 py-2 md:py-2.5 lg:py-3 2xl:py-3 border-2 transition-all duration-200 group rounded-theme relative overflow-hidden min-h-[52px] md:min-h-[58px] lg:min-h-[64px]
                   ${disabled 
                     ? 'border-transparent cursor-default' 
                     : 'border-theme-border bg-theme-bg hover:bg-theme-primary/20 hover:border-theme-primary hover:scale-[1.02] cursor-pointer active:translate-y-0.5 hover:shadow-[0_0_8px_var(--primary)]'
@@ -263,15 +263,15 @@ const Card: React.FC<CardProps> = ({ data, hidden, onSelectStat, disabled, isWin
                   }
                 `}
               >
-                <span className={`flex items-center gap-1 font-pixel text-[9px] md:text-[10px] lg:text-sm ${disabled && !isStatHighlighted ? 'text-theme-muted' : (isStatHighlighted ? 'text-theme-bg' : 'text-theme-text group-hover:text-theme-primary')}`}>
+                <span className={`flex items-center gap-0.5 md:gap-1 font-pixel text-[8px] md:text-[9px] lg:text-xs leading-tight ${disabled && !isStatHighlighted ? 'text-theme-muted' : (isStatHighlighted ? 'text-theme-bg' : 'text-theme-text group-hover:text-theme-primary')}`}>
                   {stat.icon}
                   <span className="truncate">{stat.label}</span>
                 </span>
-                <span className={`font-retro text-lg md:text-xl lg:text-3xl ${disabled && !isStatHighlighted ? 'text-theme-muted' : (isStatHighlighted ? 'text-theme-bg' : 'text-theme-text group-hover:text-theme-primary')} mt-0.5`}>
+                <span className={`font-retro text-base md:text-lg lg:text-2xl font-bold leading-none ${disabled && !isStatHighlighted ? 'text-theme-muted' : (isStatHighlighted ? 'text-theme-bg' : 'text-theme-text group-hover:text-theme-primary')} mt-1`}>
                   {stat.value}
                 </span>
                 {stat.rawValue && !disabled && (
-                  <span className="text-[7px] md:text-[8px] lg:text-xs text-theme-muted/60 mt-0.5 leading-tight">
+                  <span className="text-[7px] md:text-[8px] lg:text-[10px] text-theme-muted/60 mt-0.5 leading-tight truncate w-full">
                     {stat.rawValue}
                   </span>
                 )}
@@ -280,11 +280,11 @@ const Card: React.FC<CardProps> = ({ data, hidden, onSelectStat, disabled, isWin
         </div>
       </div>
       
-      {/* Footer Decoration */}
-      <div className="h-4 2xl:h-8 shrink-0 bg-theme-border flex items-center justify-center gap-1">
-        <div className="w-1 h-1 2xl:w-2 2xl:h-2 bg-theme-panel/50 rounded-full"></div>
-        <div className="w-1 h-1 2xl:w-2 2xl:h-2 bg-theme-panel/50 rounded-full"></div>
-        <div className="w-1 h-1 2xl:w-2 2xl:h-2 bg-theme-panel/50 rounded-full"></div>
+      {/* Footer Decoration - Smaller */}
+      <div className="h-3 2xl:h-6 shrink-0 bg-theme-border flex items-center justify-center gap-1">
+        <div className="w-1 h-1 2xl:w-1.5 2xl:h-1.5 bg-theme-panel/50 rounded-full"></div>
+        <div className="w-1 h-1 2xl:w-1.5 2xl:h-1.5 bg-theme-panel/50 rounded-full"></div>
+        <div className="w-1 h-1 2xl:w-1.5 2xl:h-1.5 bg-theme-panel/50 rounded-full"></div>
       </div>
     </div>
   );

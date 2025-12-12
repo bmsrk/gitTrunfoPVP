@@ -352,8 +352,12 @@ const App: React.FC = () => {
     if (gameState.turn !== 'ME' || isWaitingForOpponent || gameState.lastWinner) return;
     
     if (gameState.mode === 'SINGLE') {
+      // Immediately set waiting state to prevent double-clicks
+      setIsWaitingForOpponent(true);
       const cpuCard = (window as any).cpuCurrentCard;
-      processTurnResult(stat, gameState.currentMyCard!, cpuCard, 'ME');
+      processTurnResult(stat, gameState.currentMyCard!, cpuCard, 'ME').finally(() => {
+        setIsWaitingForOpponent(false);
+      });
     } else {
       setIsWaitingForOpponent(true);
       pendingStatRef.current = stat;
@@ -1054,33 +1058,33 @@ const App: React.FC = () => {
     };
 
     return (
-      <div className="min-h-screen flex flex-col p-2 md:p-4 max-w-7xl 2xl:max-w-[120rem] mx-auto overflow-hidden md:overflow-visible">
-         {/* HUD */}
-         <div className="flex flex-row md:flex-row justify-between items-start md:items-center mb-4 md:mb-12 border-b-4 border-theme-border pb-2 md:pb-6 bg-theme-bg/90 sticky top-0 z-50 backdrop-blur-sm px-2 md:px-4 rounded-b-theme shadow-theme">
+      <div className="min-h-screen flex flex-col p-2 md:p-3 max-w-7xl 2xl:max-w-[120rem] mx-auto overflow-hidden md:overflow-visible">
+         {/* HUD - Compact version */}
+         <div className="flex flex-row md:flex-row justify-between items-start md:items-center mb-2 md:mb-6 border-b-2 md:border-b-4 border-theme-border pb-1.5 md:pb-4 bg-theme-bg/90 sticky top-0 z-50 backdrop-blur-sm px-2 md:px-3 rounded-b-theme shadow-theme">
             {/* Player 1 Status */}
-            <div className="flex flex-col md:flex-row items-start md:items-center gap-2 md:gap-6 w-1/3 md:w-auto">
-               <div className="flex items-center gap-2">
-                 <div className="w-10 h-10 md:w-16 md:h-16 2xl:w-24 2xl:h-24 bg-theme-primary border-4 border-white shadow-theme flex items-center justify-center font-pixel font-bold text-theme-bg text-lg md:text-2xl lg:text-3xl rounded-theme">P1</div>
+            <div className="flex flex-col md:flex-row items-start md:items-center gap-1.5 md:gap-4 w-1/3 md:w-auto">
+               <div className="flex items-center gap-1.5">
+                 <div className="w-8 h-8 md:w-12 md:h-12 2xl:w-20 2xl:h-20 bg-theme-primary border-2 md:border-4 border-white shadow-theme flex items-center justify-center font-pixel font-bold text-theme-bg text-sm md:text-xl lg:text-2xl rounded-theme">P1</div>
                  <div className="md:hidden flex flex-col">
-                   <div className="h-2 w-16 bg-theme-panel border border-theme-border relative overflow-hidden rounded-full">
+                   <div className="h-1.5 w-14 bg-theme-panel border border-theme-border relative overflow-hidden rounded-full">
                       <div className="absolute inset-0 bg-theme-primary w-full"></div>
                    </div>
-                   <span className="font-pixel text-[10px] text-theme-primary leading-none mt-1">{gameState.myDeck.length}</span>
+                   <span className="font-pixel text-[9px] text-theme-primary leading-none mt-0.5">{gameState.myDeck.length}</span>
                  </div>
                </div>
                
                <div className="hidden md:flex flex-col">
-                 <div className="h-4 w-32 md:w-48 2xl:w-64 bg-theme-panel border-2 border-theme-border relative overflow-hidden rounded-full">
+                 <div className="h-3 w-28 md:w-40 2xl:w-56 bg-theme-panel border-2 border-theme-border relative overflow-hidden rounded-full">
                     <div className="absolute inset-0 bg-theme-primary" style={{ width: '100%' }}></div>
                     <div className="absolute inset-0 bg-[linear-gradient(90deg,transparent_50%,rgba(0,0,0,0.2)_50%)] bg-[length:4px_100%]"></div>
                  </div>
-                 <span className="font-pixel text-xs lg:text-lg text-theme-primary mt-1 text-glow">DECK: {gameState.myDeck.length + (gameState.currentMyCard ? 1 : 0)}</span>
+                 <span className="font-pixel text-[10px] lg:text-sm text-theme-primary mt-0.5 text-glow">DECK: {gameState.myDeck.length + (gameState.currentMyCard ? 1 : 0)}</span>
                </div>
             </div>
             
             {/* Center Status & Pot */}
-            <div className="flex flex-col items-center z-10 w-1/3 md:w-auto pt-2 md:pt-0">
-               <div className={`px-2 md:px-6 py-1 md:py-2 border-2 md:border-4 border-b-4 md:border-b-8 font-pixel text-[10px] md:text-sm lg:text-xl tracking-widest mb-1 md:mb-2 transition-all rounded-theme text-center whitespace-nowrap
+            <div className="flex flex-col items-center z-10 w-1/3 md:w-auto pt-1 md:pt-0">
+               <div className={`px-2 md:px-4 py-0.5 md:py-1.5 border-2 md:border-3 border-b-3 md:border-b-6 font-pixel text-[9px] md:text-xs lg:text-base tracking-widest mb-0.5 md:mb-1 transition-all rounded-theme text-center whitespace-nowrap
                   ${gameState.turn === 'ME' 
                     ? 'bg-theme-success border-theme-success/50 text-theme-bg shadow-glow' 
                     : 'bg-theme-danger border-theme-danger/50 text-theme-bg'
@@ -1091,37 +1095,37 @@ const App: React.FC = () => {
                {/* POT DISPLAY STACK */}
                {gameState.pot.length > 0 && renderPotStack()}
 
-               {isWaitingForOpponent && <span className="font-retro text-[10px] md:text-xs lg:text-base animate-pulse text-theme-muted mt-1">SYNCING...</span>}
+               {isWaitingForOpponent && <span className="font-retro text-[9px] md:text-[10px] lg:text-xs animate-pulse text-theme-muted mt-0.5">SYNCING...</span>}
             </div>
 
             {/* Player 2 Status */}
-            <div className="flex flex-col md:flex-row items-end md:items-center gap-2 md:gap-6 w-1/3 md:w-auto justify-end">
+            <div className="flex flex-col md:flex-row items-end md:items-center gap-1.5 md:gap-4 w-1/3 md:w-auto justify-end">
                <div className="hidden md:flex flex-col items-end">
-                 <div className="h-4 w-32 md:w-48 2xl:w-64 bg-theme-panel border-2 border-theme-border relative overflow-hidden rounded-full">
+                 <div className="h-3 w-28 md:w-40 2xl:w-56 bg-theme-panel border-2 border-theme-border relative overflow-hidden rounded-full">
                     <div className="absolute inset-0 bg-theme-danger" style={{ width: '100%' }}></div>
                     <div className="absolute inset-0 bg-[linear-gradient(90deg,transparent_50%,rgba(0,0,0,0.2)_50%)] bg-[length:4px_100%]"></div>
                  </div>
                  <div className="flex justify-between w-full">
-                    <span className="font-pixel text-xs lg:text-lg text-theme-danger mt-1 text-glow">DECK: {gameState.opponentDeckCount}</span>
-                    <div className="flex items-center gap-1.5 mt-1 bg-theme-bg border border-theme-border px-2 py-0.5 rounded-full shadow-sm">
-                        <div className={`w-2 h-2 rounded-full ${connStatus.color} ${connStatus.pulse ? 'animate-pulse' : ''}`}></div>
-                        <span className="font-pixel text-[8px] 2xl:text-xs text-theme-muted tracking-wider">{connStatus.label}</span>
+                    <span className="font-pixel text-[10px] lg:text-sm text-theme-danger mt-0.5 text-glow">DECK: {gameState.opponentDeckCount}</span>
+                    <div className="flex items-center gap-1 mt-0.5 bg-theme-bg border border-theme-border px-1.5 py-0.5 rounded-full shadow-sm">
+                        <div className={`w-1.5 h-1.5 rounded-full ${connStatus.color} ${connStatus.pulse ? 'animate-pulse' : ''}`}></div>
+                        <span className="font-pixel text-[7px] 2xl:text-[10px] text-theme-muted tracking-wider">{connStatus.label}</span>
                     </div>
                  </div>
                </div>
                
-               <div className="flex items-center gap-2">
+               <div className="flex items-center gap-1.5">
                  <div className="md:hidden flex flex-col items-end">
-                   <div className="h-2 w-16 bg-theme-panel border border-theme-border relative overflow-hidden rounded-full">
+                   <div className="h-1.5 w-14 bg-theme-panel border border-theme-border relative overflow-hidden rounded-full">
                       <div className="absolute inset-0 bg-theme-danger w-full"></div>
                    </div>
-                   <span className="font-pixel text-[10px] text-theme-danger leading-none mt-1">{gameState.opponentDeckCount}</span>
+                   <span className="font-pixel text-[9px] text-theme-danger leading-none mt-0.5">{gameState.opponentDeckCount}</span>
                  </div>
                  <div className="relative">
-                    <div className="w-10 h-10 md:w-16 md:h-16 2xl:w-24 2xl:h-24 bg-theme-danger border-4 border-white shadow-theme flex items-center justify-center font-pixel font-bold text-white text-lg md:text-2xl lg:text-3xl rounded-theme">P2</div>
+                    <div className="w-8 h-8 md:w-12 md:h-12 2xl:w-20 2xl:h-20 bg-theme-danger border-2 md:border-4 border-white shadow-theme flex items-center justify-center font-pixel font-bold text-white text-sm md:text-xl lg:text-2xl rounded-theme">P2</div>
                      {/* Mobile Connection Indicator */}
-                     <div className="md:hidden absolute -bottom-1.5 -right-1.5 bg-theme-bg border border-theme-border rounded-full p-1 shadow-sm flex items-center justify-center">
-                        <div className={`w-2.5 h-2.5 rounded-full ${connStatus.color} ${connStatus.pulse ? 'animate-pulse' : ''}`}></div>
+                     <div className="md:hidden absolute -bottom-1 -right-1 bg-theme-bg border border-theme-border rounded-full p-0.5 shadow-sm flex items-center justify-center">
+                        <div className={`w-2 h-2 rounded-full ${connStatus.color} ${connStatus.pulse ? 'animate-pulse' : ''}`}></div>
                      </div>
                  </div>
                </div>
@@ -1130,14 +1134,14 @@ const App: React.FC = () => {
              {/* Settings Button in Game */}
              <button 
                onClick={() => { soundManager.playSelect(); setShowSettings(true); }}
-               className="absolute right-0 top-16 md:top-20 bg-theme-panel border-2 border-theme-border p-2 rounded-theme hover:border-theme-primary text-theme-muted hover:text-theme-primary transition-all shadow-theme z-50"
+               className="absolute right-0 top-12 md:top-14 bg-theme-panel border-2 border-theme-border p-1.5 rounded-theme hover:border-theme-primary text-theme-muted hover:text-theme-primary transition-all shadow-theme z-50"
              >
-               <Settings className="w-4 h-4 2xl:w-6 2xl:h-6" />
+               <Settings className="w-3.5 h-3.5 md:w-4 md:h-4 2xl:w-5 2xl:h-5" />
              </button>
          </div>
 
-         {/* Battle Arena */}
-         <div className="flex-1 flex flex-col md:flex-row items-center justify-start md:justify-center gap-6 md:gap-16 lg:gap-24 relative py-4 md:py-8 min-h-0">
+         {/* Battle Arena - Compact spacing */}
+         <div className="flex-1 flex flex-col md:flex-row items-center justify-start md:justify-center gap-3 md:gap-8 lg:gap-12 relative py-2 md:py-4 min-h-0">
             {/* Opponent Card (Top on Mobile) */}
             <div className="relative z-10 order-1 md:order-3">
                {gameState.currentOpponentCard ? (
@@ -1162,27 +1166,27 @@ const App: React.FC = () => {
                )}
                 {/* Mobile Hidden Opponent Indicator */}
                 {!gameState.currentOpponentCard && (
-                    <div className="md:hidden w-[80vw] h-16 bg-theme-panel border-4 border-theme-border border-dashed flex items-center justify-center rounded-theme animate-pulse">
-                        <span className={`font-pixel text-xs ${hiddenCardLabel ? 'text-theme-primary' : 'text-theme-muted'}`}>
+                    <div className="md:hidden w-[80vw] h-12 bg-theme-panel border-2 border-theme-border border-dashed flex items-center justify-center rounded-theme animate-pulse">
+                        <span className={`font-pixel text-[10px] ${hiddenCardLabel ? 'text-theme-primary' : 'text-theme-muted'}`}>
                             {hiddenCardLabel || "OPPONENT WAITING..."}
                         </span>
                     </div>
                 )}
             </div>
 
-            {/* VS Graphic */}
-            <div className="flex items-center justify-center z-0 order-2 md:order-2 my-2 md:my-0">
+            {/* VS Graphic - Smaller */}
+            <div className="flex items-center justify-center z-0 order-2 md:order-2 my-1 md:my-0">
                <div className="relative md:block hidden">
-                  <Swords className="text-theme-border opacity-50 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-24 h-24 2xl:w-48 2xl:h-48" />
-                  <h1 className="font-pixel text-6xl 2xl:text-9xl text-theme-text italic drop-shadow-[4px_4px_0_#000] z-10 relative text-glow">VS</h1>
+                  <Swords className="text-theme-border opacity-50 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 2xl:w-32 2xl:h-32" />
+                  <h1 className="font-pixel text-4xl 2xl:text-7xl text-theme-text italic drop-shadow-[4px_4px_0_#000] z-10 relative text-glow">VS</h1>
                </div>
-               <div className="md:hidden font-pixel text-xl text-theme-muted opacity-50">VS</div>
+               <div className="md:hidden font-pixel text-lg text-theme-muted opacity-50">VS</div>
             </div>
 
              {/* Player Card (Bottom on Mobile) */}
             <div className="relative group z-10 order-3 md:order-1">
                {gameState.turn === 'ME' && !gameState.lastWinner && (
-                 <div className="absolute -top-8 md:-top-12 left-1/2 -translate-x-1/2 font-pixel text-theme-primary animate-bounce text-xs lg:text-lg whitespace-nowrap text-glow">
+                 <div className="absolute -top-6 md:-top-8 left-1/2 -translate-x-1/2 font-pixel text-theme-primary animate-bounce text-[10px] lg:text-sm whitespace-nowrap text-glow">
                     VV SELECT STAT VV
                  </div>
                )}
@@ -1202,21 +1206,21 @@ const App: React.FC = () => {
             </div>
          </div>
 
-         {/* Commentary Box / Terminal Log */}
+         {/* Commentary Box / Terminal Log - Compact */}
          {/* Desktop Log */}
-         <div className="hidden md:flex mt-8 lg:mt-12 mb-4 justify-center">
-            <div className="w-full max-w-3xl 2xl:max-w-5xl bg-theme-bg border-4 border-theme-border p-1 shadow-theme rounded-theme">
-               <div className="bg-theme-panel h-48 2xl:h-64 rounded-[calc(var(--radius)-4px)] flex flex-col overflow-hidden relative">
+         <div className="hidden md:flex mt-3 lg:mt-6 mb-2 justify-center">
+            <div className="w-full max-w-3xl 2xl:max-w-5xl bg-theme-bg border-2 md:border-4 border-theme-border p-1 shadow-theme rounded-theme">
+               <div className="bg-theme-panel h-32 2xl:h-48 rounded-[calc(var(--radius)-4px)] flex flex-col overflow-hidden relative">
                   {/* Terminal Header */}
-                  <div className="flex gap-2 p-2 border-b border-theme-border/30 bg-theme-bg/30">
-                     <div className="w-3 h-3 2xl:w-5 2xl:h-5 rounded-full bg-theme-danger"></div>
-                     <div className="w-3 h-3 2xl:w-5 2xl:h-5 rounded-full bg-theme-primary"></div>
-                     <div className="w-3 h-3 2xl:w-5 2xl:h-5 rounded-full bg-theme-success"></div>
-                     <span className="font-retro text-theme-muted/50 text-xs lg:text-base ml-auto">BATTLE_LOG.EXE</span>
+                  <div className="flex gap-1.5 p-1.5 border-b border-theme-border/30 bg-theme-bg/30">
+                     <div className="w-2.5 h-2.5 2xl:w-4 2xl:h-4 rounded-full bg-theme-danger"></div>
+                     <div className="w-2.5 h-2.5 2xl:w-4 2xl:h-4 rounded-full bg-theme-primary"></div>
+                     <div className="w-2.5 h-2.5 2xl:w-4 2xl:h-4 rounded-full bg-theme-success"></div>
+                     <span className="font-retro text-theme-muted/50 text-[10px] lg:text-sm ml-auto">BATTLE_LOG.EXE</span>
                   </div>
                   
                   {/* Log Output */}
-                  <div ref={logContainerRef} className="flex-1 p-4 overflow-y-auto font-retro text-lg lg:text-xl space-y-1">
+                  <div ref={logContainerRef} className="flex-1 p-2.5 md:p-3 overflow-y-auto font-retro text-sm lg:text-lg space-y-0.5">
                     {gameState.log.map((event, i) => (
                       <div key={i} className={`${i === gameState.log.length - 1 ? 'text-theme-primary animate-pulse' : 'text-theme-text/70'}`}>
                         {event.message}
