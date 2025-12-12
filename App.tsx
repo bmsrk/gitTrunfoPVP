@@ -5,7 +5,7 @@ import { generateDeck, DECK_CONFIGS } from './services/githubService';
 import { getBattleCommentary } from './services/geminiService';
 import { soundManager } from './services/soundService';
 import Card from './components/Card';
-import { Copy, Wifi, User, Cpu, RotateCcw, Swords, Trophy, Loader2, Disc, HelpCircle, X, Layers, Settings, Gamepad2, Terminal, ChevronUp, ChevronDown, AlertTriangle } from 'lucide-react';
+import { Copy, Wifi, User, Cpu, RotateCcw, Swords, Trophy, Loader2, Disc, HelpCircle, X, Layers, Settings, Terminal, ChevronUp, ChevronDown, AlertTriangle } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 type Theme = 'cyberpunk' | 'snes' | 'dreamcast' | 'n64' | 'psx' | 'xbox' | 'winxp' | 'pc98';
@@ -39,7 +39,6 @@ const App: React.FC = () => {
   const [gameState, setGameState] = useState<GameState>({
     status: 'LOBBY',
     mode: 'SINGLE',
-    gameMode: 'CASUAL',
     selectedDeck: null,
     myDeck: [],
     opponentDeckCount: 0,
@@ -52,10 +51,7 @@ const App: React.FC = () => {
     log: [],
     peerId: null,
     opponentPeerId: null,
-    aiCommentary: null,
-    tournamentRound: 1,
-    tournamentWins: 0,
-    tournamentLosses: 0
+    aiCommentary: null
   });
 
   const [inputPeerId, setInputPeerId] = useState('');
@@ -256,8 +252,7 @@ const App: React.FC = () => {
       payload: { 
         deck: deck2, 
         turn: initialState.turn === 'ME' ? 'OPPONENT' : 'ME',
-        deckType: gameState.selectedDeck,
-        gameMode: gameState.gameMode
+        deckType: gameState.selectedDeck
       }
     });
     soundManager.playStart();
@@ -284,16 +279,14 @@ const App: React.FC = () => {
       turn: 'ME',
       lastWinner: null,
       lastStat: null,
+      cpuDeck: deck2.slice(1),
+      cpuCurrentCard: deck2[0],
       log: [
         { type: 'SYSTEM', message: '> System Initialized' },
         { type: 'SYSTEM', message: '> CPU Opponent Loaded' },
         { type: 'GAME_START', message: `> Deck: ${gameState.selectedDeck || 'Standard'}`, details: { deckType: gameState.selectedDeck || 'Standard' } }
       ],
     }));
-
-    (window as any).cpuDeck = deck2;
-    (window as any).cpuCurrentCard = deck2[0];
-    (window as any).cpuDeck.shift(); 
     
     soundManager.playStart();
   };
@@ -311,7 +304,6 @@ const App: React.FC = () => {
           pot: [],
           turn: msg.payload.turn,
           selectedDeck: msg.payload.deckType || prev.selectedDeck,
-          gameMode: msg.payload.gameMode || prev.gameMode,
           log: [
             { type: 'SYSTEM', message: '> Connection Established' },
             { type: 'GAME_START', message: '> Game Started' },
@@ -354,8 +346,8 @@ const App: React.FC = () => {
     if (gameState.mode === 'SINGLE') {
       // Immediately set waiting state to prevent double-clicks
       setIsWaitingForOpponent(true);
-      const cpuCard = (window as any).cpuCurrentCard;
-      processTurnResult(stat, gameState.currentMyCard!, cpuCard, 'ME').finally(() => {
+      const cpuCard = gameState.cpuCurrentCard;
+      processTurnResult(stat, gameState.currentMyCard!, cpuCard!, 'ME').finally(() => {
         setIsWaitingForOpponent(false);
       });
     } else {
@@ -431,7 +423,7 @@ const App: React.FC = () => {
 
       // --- SINGLE PLAYER LOGIC ---
       if (prev.mode === 'SINGLE') {
-        const cpuDeck = (window as any).cpuDeck as CardData[];
+        const cpuDeck = [...(prev.cpuDeck || [])];
         
         if (winner === 'ME') {
            newMyDeck.push(...loot);
@@ -449,7 +441,7 @@ const App: React.FC = () => {
         if (cpuDeck.length === 0) return { ...prev, status: 'GAME_OVER', lastWinner: 'ME' };
 
         const nextMyCard = newMyDeck.shift()!;
-        (window as any).cpuCurrentCard = cpuDeck.shift();
+        const nextCpuCard = cpuDeck.shift()!;
         
         return {
           ...prev,
@@ -458,6 +450,8 @@ const App: React.FC = () => {
           opponentDeckCount: cpuDeck.length + 1, // Deck + Card in Hand
           currentMyCard: nextMyCard,
           currentOpponentCard: null,
+          cpuDeck: cpuDeck,
+          cpuCurrentCard: nextCpuCard,
           lastWinner: null,
           lastStat: null,
           aiCommentary: null,
@@ -519,7 +513,7 @@ const App: React.FC = () => {
         !gameState.lastWinner) {
        
        const timer = setTimeout(() => {
-           const cpuCard = (window as any).cpuCurrentCard as CardData;
+           const cpuCard = stateRef.current.cpuCurrentCard;
            if(!cpuCard) return;
            const stats: StatType[] = ['followersScore', 'repositoriesScore', 'influenceScore', 'activityScore', 'techBreadth', 'impactScore'];
            const randomStat = stats[Math.floor(Math.random() * stats.length)];
@@ -700,10 +694,6 @@ const App: React.FC = () => {
         <h1 className="text-3xl md:text-6xl lg:text-6xl font-pixel tracking-tighter text-theme-text drop-shadow-[4px_4px_0_var(--shadow)] text-glow leading-none">
           SELECT_DECK
         </h1>
-        
-        <p className="font-retro text-lg md:text-xl lg:text-2xl text-theme-muted tracking-widest uppercase">
-          {gameState.gameMode === 'TOURNAMENT' ? 'Tournament Mode' : 'Casual Mode'}
-        </p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 w-full px-4">
@@ -801,47 +791,6 @@ const App: React.FC = () => {
         <p className="font-retro text-lg md:text-2xl lg:text-3xl text-theme-muted tracking-widest uppercase text-glow">
           {'>> Insert Coin to Initialize P2P Battle'}
         </p>
-      </div>
-
-      {/* Game Mode Selection */}
-      <div className="w-full max-w-xl lg:max-w-3xl bg-theme-bg p-1 border-4 border-theme-border shadow-theme rounded-theme mx-4">
-        <div className="bg-theme-panel p-4 md:p-6 flex flex-col gap-4 rounded-[calc(var(--radius)-4px)]">
-            <h3 className="font-pixel text-xs md:text-sm lg:text-lg text-theme-text flex items-center gap-2">
-              <Gamepad2 size={16} className="2xl:w-6 2xl:h-6" /> GAME_MODE:
-            </h3>
-            <div className="grid grid-cols-2 gap-4">
-              <button
-                onClick={() => {
-                  soundManager.playSelect();
-                  setGameState(prev => ({ ...prev, gameMode: 'CASUAL' }));
-                }}
-                className={`p-4 border-4 transition-all rounded-theme ${
-                  gameState.gameMode === 'CASUAL'
-                    ? 'border-theme-primary bg-theme-primary/20 shadow-glow'
-                    : 'border-theme-border bg-theme-bg hover:border-theme-text'
-                }`}
-              >
-                <span className={`font-pixel text-xs md:text-sm lg:text-lg uppercase ${gameState.gameMode === 'CASUAL' ? 'text-theme-primary' : 'text-theme-muted'}`}>
-                  Casual
-                </span>
-              </button>
-              <button
-                onClick={() => {
-                  soundManager.playSelect();
-                  setGameState(prev => ({ ...prev, gameMode: 'TOURNAMENT' }));
-                }}
-                className={`p-4 border-4 transition-all rounded-theme ${
-                  gameState.gameMode === 'TOURNAMENT'
-                    ? 'border-theme-primary bg-theme-primary/20 shadow-glow'
-                    : 'border-theme-border bg-theme-bg hover:border-theme-text'
-                }`}
-              >
-                <span className={`font-pixel text-xs md:text-sm lg:text-lg uppercase ${gameState.gameMode === 'TOURNAMENT' ? 'text-theme-primary' : 'text-theme-muted'}`}>
-                  Tournament
-                </span>
-              </button>
-            </div>
-        </div>
       </div>
 
       {/* Deck Selection Display */}

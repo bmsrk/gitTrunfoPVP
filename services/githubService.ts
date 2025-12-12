@@ -80,21 +80,6 @@ export const DECK_CONFIGS: Record<DeckType, DeckConfig> = {
   }
 };
 
-// Deck-specific weights for strategic attributes
-// NOTE: These weights are prepared for future weighted score calculations
-// Currently, battles compare raw attribute scores directly
-// Future enhancement: implement calculateWeightedScore() using these multipliers
-export const getDeckWeights = (deckType: DeckType) => {
-  const weights = {
-    Standard: { followersScore: 1.0, repositoriesScore: 1.0, influenceScore: 1.0, activityScore: 1.0, techBreadth: 1.0, impactScore: 1.0 },
-    Web: { followersScore: 0.9, repositoriesScore: 1.0, influenceScore: 1.0, activityScore: 1.3, techBreadth: 1.2, impactScore: 1.1 },
-    LegacyLanguages: { followersScore: 0.8, repositoriesScore: 1.2, influenceScore: 1.0, activityScore: 0.8, techBreadth: 0.9, impactScore: 1.3 },
-    Esoteric: { followersScore: 0.9, repositoriesScore: 1.0, influenceScore: 1.3, activityScore: 1.0, techBreadth: 1.4, impactScore: 1.2 },
-    Corporate: { followersScore: 1.5, repositoriesScore: 0.8, influenceScore: 1.4, activityScore: 0.9, techBreadth: 1.1, impactScore: 1.3 }
-  };
-  return weights[deckType] || weights.Standard;
-};
-
 const FALLBACK_USERS = [
   'torvalds', 'gaearon', 'yyx990803', 'sindresorhus', 'tj', 'addyosmani', 
   'paulirish', 'mattn', 'mojombo', 'defunkt', 'pjhyett', 'wycats', 
