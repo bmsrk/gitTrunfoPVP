@@ -1,5 +1,17 @@
 import { CardData, GithubUser, DeckType, DeckConfig, GitHubRepoStats, GitHubLanguageStats } from '../types';
 
+// Normalization reference ranges (based on typical GitHub user distribution)
+const NORMALIZATION_RANGES = {
+  followers: { min: 0, max: 10000 },
+  repos: { min: 0, max: 500 },
+  stars: { min: 0, max: 50000 },
+  languages: { min: 0, max: 20 },
+  activity: { min: 0, max: 50 }
+};
+
+// API success rate threshold for using real vs mock data
+const API_SUCCESS_THRESHOLD = 0.5; // 50% success rate required
+
 // Cache management
 interface CacheEntry<T> {
   data: T;
@@ -69,6 +81,9 @@ export const DECK_CONFIGS: Record<DeckType, DeckConfig> = {
 };
 
 // Deck-specific weights for strategic attributes
+// NOTE: These weights are prepared for future weighted score calculations
+// Currently, battles compare raw attribute scores directly
+// Future enhancement: implement calculateWeightedScore() using these multipliers
 export const getDeckWeights = (deckType: DeckType) => {
   const weights = {
     Standard: { followersScore: 1.0, repositoriesScore: 1.0, influenceScore: 1.0, activityScore: 1.0, techBreadth: 1.0 },
@@ -260,33 +275,26 @@ const fetchRepoStats = async (username: string): Promise<GitHubRepoStats> => {
 
 // Calculate strategic attributes from enriched data
 const calculateStrategicAttributes = (user: GithubUser, repoStats: GitHubRepoStats, languageStats: GitHubLanguageStats): Partial<CardData> => {
-  // Reference ranges for normalization (based on typical GitHub user distribution)
-  const followersRange = { min: 0, max: 10000 };
-  const reposRange = { min: 0, max: 500 };
-  const starsRange = { min: 0, max: 50000 };
-  const languageRange = { min: 0, max: 20 };
-  const activityRange = { min: 0, max: 50 };
-  
   // 1. Followers Score (log scale for heavy tail)
-  const followersScore = normalizeLogScale(user.followers, followersRange.min, followersRange.max);
+  const followersScore = normalizeLogScale(user.followers, NORMALIZATION_RANGES.followers.min, NORMALIZATION_RANGES.followers.max);
   
   // 2. Repositories Score (log scale)
-  const repositoriesScore = normalizeLogScale(user.public_repos, reposRange.min, reposRange.max);
+  const repositoriesScore = normalizeLogScale(user.public_repos, NORMALIZATION_RANGES.repos.min, NORMALIZATION_RANGES.repos.max);
   
   // 3. Influence Score (aggregate: stars + forks, log scale)
   const totalInfluence = repoStats.totalStars + repoStats.totalForks;
-  const influenceScore = normalizeLogScale(totalInfluence, starsRange.min, starsRange.max);
+  const influenceScore = normalizeLogScale(totalInfluence, NORMALIZATION_RANGES.stars.min, NORMALIZATION_RANGES.stars.max);
   
   // 4. Activity Score (recent commits + recency bonus)
   const daysSinceLastCommit = repoStats.lastCommitDate 
     ? Math.floor((Date.now() - new Date(repoStats.lastCommitDate).getTime()) / (1000 * 60 * 60 * 24))
     : 999;
   const recencyBonus = Math.max(0, 100 - daysSinceLastCommit / 3); // Decay over 300 days
-  const activityBase = normalizeLinear(repoStats.recentCommits, activityRange.min, activityRange.max);
+  const activityBase = normalizeLinear(repoStats.recentCommits, NORMALIZATION_RANGES.activity.min, NORMALIZATION_RANGES.activity.max);
   const activityScore = Math.min(100, (activityBase * 0.7) + (recencyBonus * 0.3));
   
   // 5. Tech Breadth (language diversity)
-  const techBreadth = normalizeLinear(languageStats.languageCount, languageRange.min, languageRange.max);
+  const techBreadth = normalizeLinear(languageStats.languageCount, NORMALIZATION_RANGES.languages.min, NORMALIZATION_RANGES.languages.max);
   
   return {
     followersScore: Math.round(followersScore),
@@ -352,7 +360,7 @@ export const generateDeck = async (count: number = 10, deckType: DeckType = 'Sta
   const minRequired = count * 2;
   const successRate = validCards.length / minRequired;
   
-  if (successRate >= 0.5) {
+  if (successRate >= API_SUCCESS_THRESHOLD) {
     // Good success rate, use only real cards
     if (validCards.length >= minRequired) {
       return validCards.slice(0, minRequired);

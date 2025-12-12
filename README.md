@@ -16,11 +16,24 @@
 
 ## ✨ Features
 
-- 🎴 **Stack-Based Decks**: Choose from 4 specialized decks
+- 🎴 **Stack-Based Decks**: Choose from 5 specialized decks
   - ⭐ **Standard**: Popular developers across all languages
   - 🌐 **Web Technologies**: JavaScript, TypeScript, HTML/CSS experts
   - 🏛️ **Legacy Languages**: C, C++, Java, system programming legends
   - 🔮 **Esoteric**: Rust, Go, functional programming enthusiasts
+  - 🏢 **Corporate**: DevRel, community leaders, and tech influencers
+
+- ⚔️ **Strategic Attributes**: Normalized scoring system (0-100 scale)
+  - **Followers Score**: Community influence (log-scaled)
+  - **Repositories Score**: Project portfolio size
+  - **Influence Score**: Aggregate stars + forks
+  - **Activity Score**: Recent commits + recency bonus
+  - **Tech Breadth**: Language diversity
+
+- 🎯 **Deck Weights**: Each deck favors different attributes
+  - Corporate excels at Followers (1.5x) and Influence (1.4x)
+  - Web favors Activity (1.3x) and Tech Breadth (1.2x)
+  - Esoteric masters Tech Breadth (1.4x) and Influence (1.3x)
 
 - 🎮 **Game Modes**:
   - **Casual Mode**: Quick matches for fun

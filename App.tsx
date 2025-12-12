@@ -546,8 +546,24 @@ const App: React.FC = () => {
                       <Swords size={24} className="text-theme-success" />
                    </div>
                    <div>
-                      <h3 className="font-pixel text-theme-text text-sm mb-1">1. BATTLE</h3>
-                      <p>Choose the stat with the <strong className="text-theme-primary">HIGHEST VALUE</strong> on your card.</p>
+                      <h3 className="font-pixel text-theme-text text-sm mb-1">1. STRATEGIC ATTRIBUTES</h3>
+                      <p>Each card has 5 normalized attributes (0-100 scale):</p>
+                      <ul className="text-sm md:text-base mt-2 space-y-1 list-disc list-inside">
+                        <li><strong>Followers:</strong> Community influence</li>
+                        <li><strong>Repos:</strong> Project portfolio size</li>
+                        <li><strong>Influence:</strong> Stars + forks aggregate</li>
+                        <li><strong>Activity:</strong> Recent commits + recency</li>
+                        <li><strong>Tech Breadth:</strong> Language diversity</li>
+                      </ul>
+                   </div>
+                </div>
+                <div className="flex gap-4">
+                   <div className="w-12 h-12 bg-theme-bg border-2 border-theme-border flex items-center justify-center shrink-0 rounded-theme">
+                      <Trophy size={24} className="text-theme-primary" />
+                   </div>
+                   <div>
+                      <h3 className="font-pixel text-theme-text text-sm mb-1">2. BATTLE</h3>
+                      <p>Choose the attribute with the <strong className="text-theme-primary">HIGHEST SCORE</strong> on your card. Higher score wins!</p>
                    </div>
                 </div>
                 <div className="flex gap-4">
@@ -558,6 +574,11 @@ const App: React.FC = () => {
                       <h3 className="font-pixel text-theme-text text-sm mb-1">3. THE BUFFER</h3>
                       <p>Draws go to the <span className="text-theme-accent">BUFFER</span>. Next winner takes ALL.</p>
                    </div>
+                </div>
+                <div className="bg-theme-bg/50 p-3 rounded-theme border-2 border-theme-border">
+                   <p className="text-sm md:text-base">
+                      <span className="text-theme-primary">TIP:</span> Different decks favor different attributes! Corporate decks excel at Followers, Web decks at Activity, and Esoteric decks at Tech Breadth.
+                   </p>
                 </div>
              </div>
              <button 
