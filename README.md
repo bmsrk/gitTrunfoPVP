@@ -18,3 +18,22 @@ View your app in AI Studio: https://ai.studio/apps/drive/1nFUReylisquoiCcy6BJCQ8
 2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
 3. Run the app:
    `npm run dev`
+
+## Deploy to GitHub Pages
+
+The app is automatically deployed to GitHub Pages when changes are pushed to the `main` branch.
+
+The deployment workflow:
+1. Installs dependencies
+2. Builds the production bundle
+3. Deploys to GitHub Pages
+
+To deploy manually, go to the Actions tab and run the "Deploy to GitHub Pages" workflow.
+
+### Configuration
+
+The app is configured to deploy at the base path `/gitTrunfoPVP/` for GitHub Pages. This is set in `vite.config.ts`:
+
+```typescript
+base: '/gitTrunfoPVP/',
+```

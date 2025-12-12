@@ -630,7 +630,7 @@ const App: React.FC = () => {
         </h1>
         
         <p className="font-retro text-lg md:text-2xl 2xl:text-4xl text-theme-muted tracking-widest uppercase text-glow">
-          >> Insert Coin to Initialize P2P Battle
+          {'>> Insert Coin to Initialize P2P Battle'}
         </p>
       </div>
 
@@ -691,7 +691,7 @@ const App: React.FC = () => {
       
       {gameState.peerId && (
         <div className="w-full max-w-xl 2xl:max-w-4xl border-4 border-dashed border-theme-primary/50 p-6 bg-theme-primary/10 flex flex-col items-center animate-fade-in text-center rounded-theme mx-4">
-           <p className="font-pixel text-xs 2xl:text-lg text-theme-primary mb-2 text-glow">>> YOUR_LOBBY_COORDINATES:</p>
+           <p className="font-pixel text-xs 2xl:text-lg text-theme-primary mb-2 text-glow">{'>> YOUR_LOBBY_COORDINATES:'}</p>
            <div className="flex items-center gap-2 w-full justify-center bg-theme-bg border-2 border-theme-primary/30 p-4 mb-2 cursor-pointer hover:bg-theme-bg/80 rounded-theme shadow-theme"
                 onClick={() => { navigator.clipboard.writeText(gameState.peerId!); soundManager.playSelect(); }}>
               <code className="text-theme-primary font-retro text-sm md:text-xl 2xl:text-3xl truncate break-all">{gameState.peerId}</code>
