@@ -441,6 +441,31 @@
         box-shadow: 0 0 10px rgba(255, 215, 0, 0.6), inset 0 0 10px rgba(255, 255, 255, 0.4);
         z-index: 10;
       }
+
+      /* Enhanced hover effect for foil cards */
+      .foil-card {
+        transform-style: preserve-3d;
+        transition: transform 0.1s ease-out;
+      }
+
+      .foil-card:hover {
+        transform: rotateY(var(--rotate-x, 0deg)) rotateX(var(--rotate-y, 0deg)) scale(1.05);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 
+                    0 0 30px rgba(255, 215, 0, 0.5),
+                    inset 0 0 20px rgba(255, 255, 255, 0.1);
+      }
+
+      /* 3D tilt effect for all interactive cards */
+      .card-3d-tilt {
+        transform-style: preserve-3d;
+        transition: transform 0.1s ease-out, box-shadow 0.3s ease;
+      }
+
+      .card-3d-tilt:hover {
+        transform: rotateY(var(--rotate-x, 0deg)) rotateX(var(--rotate-y, 0deg)) translateY(-8px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3), 0 0 15px var(--primary);
+        border-color: var(--primary);
+      }
     </style>
   <script type="importmap">
 {

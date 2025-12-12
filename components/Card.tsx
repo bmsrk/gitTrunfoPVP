@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { CardData, StatType } from '../types';
 import { Zap, Star, TrendingUp, Activity, Grid, ArrowDown, Loader2, Target } from 'lucide-react';
 import { soundManager } from '../services/soundService';
@@ -16,6 +16,8 @@ interface CardProps {
 }
 
 const Card: React.FC<CardProps> = ({ data, hidden, onSelectStat, disabled, isWinner, isLoser, animationType = 'enter', highlightStat, processingLabel }) => {
+  const cardRef = useRef<HTMLDivElement>(null);
+  
   // Responsive dimensions
   // Increased min-height to ensure content fits without cramping
   // Added overflow handling logic
@@ -28,7 +30,7 @@ const Card: React.FC<CardProps> = ({ data, hidden, onSelectStat, disabled, isWin
     ${!hidden ? animationClass : ''} 
     ${isWinner ? 'border-theme-success animate-glow-pulse scale-105 z-10' : ''}
     ${isLoser ? 'border-theme-danger opacity-80 grayscale scale-95' : 'border-theme-border shadow-theme'}
-    ${!isWinner && !isLoser && !disabled ? 'hover:-translate-y-2 hover:border-theme-primary hover:shadow-[0_0_15px_var(--primary)]' : ''}
+    ${!isWinner && !isLoser && !disabled && !hidden ? 'card-3d-tilt' : ''}
   `;
 
   if (hidden) {
@@ -141,9 +143,41 @@ const Card: React.FC<CardProps> = ({ data, hidden, onSelectStat, disabled, isWin
     }
   };
 
+  // 3D tilt effect for all cards on mouse move
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (disabled || isWinner || isLoser || !cardRef.current || hidden) return;
+    
+    const card = cardRef.current;
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    
+    // Stronger tilt for foil cards, subtle for normal cards
+    const tiltMultiplier = isFoilCard ? 10 : 5;
+    const rotateX = ((y - centerY) / centerY) * -tiltMultiplier;
+    const rotateY = ((x - centerX) / centerX) * tiltMultiplier;
+    
+    card.style.setProperty('--rotate-x', `${rotateY}deg`);
+    card.style.setProperty('--rotate-y', `${rotateX}deg`);
+  };
+
+  const handleMouseLeave = () => {
+    if (!cardRef.current) return;
+    
+    const card = cardRef.current;
+    card.style.setProperty('--rotate-x', '0deg');
+    card.style.setProperty('--rotate-y', '0deg');
+  };
+
   return (
     <div 
+      ref={cardRef}
       onMouseEnter={handleMouseEnter}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
       className={`${containerClasses} ${isFoilCard && !hidden ? 'foil-card' : ''}`}
     >
       {/* FOIL BADGE for rare cards */}
