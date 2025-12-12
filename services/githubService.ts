@@ -1,4 +1,52 @@
-import { CardData, GithubUser } from '../types';
+import { CardData, GithubUser, DeckType, DeckConfig } from '../types';
+
+// Deck configurations with curated users per programming language/stack
+export const DECK_CONFIGS: Record<DeckType, DeckConfig> = {
+  Standard: {
+    id: 'Standard',
+    name: 'Standard',
+    description: 'Popular developers across all languages',
+    icon: '⭐',
+    users: [
+      'torvalds', 'gaearon', 'yyx990803', 'sindresorhus', 'tj', 'addyosmani',
+      'paulirish', 'kentcdodds', 'dan_abramov', 'sophiebits', 'sebmarkbage',
+      'mjackson', 'ryanflorence', 'jamiebuilds', 'getify', 'ry'
+    ]
+  },
+  Web: {
+    id: 'Web',
+    name: 'Web Technologies',
+    description: 'JavaScript, TypeScript, HTML, CSS experts',
+    icon: '🌐',
+    users: [
+      'gaearon', 'yyx990803', 'sindresorhus', 'tj', 'addyosmani', 'paulirish',
+      'kentcdodds', 'wesbos', 'sarah_edo', 'getify', 'benawad', 'cassidoo',
+      'tannerlinsley', 'jaredpalmer', 'chibicode', 'stolinski'
+    ]
+  },
+  LegacyLanguages: {
+    id: 'LegacyLanguages',
+    name: 'Legacy Languages',
+    description: 'C, C++, Java, and system programming legends',
+    icon: '🏛️',
+    users: [
+      'torvalds', 'antirez', 'fabpot', 'mattn', 'fatih', 'clarkgrubb',
+      'jashkenas', 'fogleman', 'penberg', 'visionmedia', 'substack',
+      'creationix', 'rauchg', 'defunkt', 'mojombo', 'technoweenie'
+    ]
+  },
+  Esoteric: {
+    id: 'Esoteric',
+    name: 'Esoteric & Niche',
+    description: 'Rust, Go, functional programming, and emerging tech',
+    icon: '🔮',
+    users: [
+      'ry', 'jessehattabaugh', 'fitzgen', 'dtolnay', 'BurntSushi', 'alexcrichton',
+      'mitsuhiko', 'brson', 'huonw', 'erickt', 'cmr', 'pcwalton',
+      'nikomatsakis', 'nrc', 'steveklabnik', 'carols10cents'
+    ]
+  }
+};
 
 const FALLBACK_USERS = [
   'torvalds', 'gaearon', 'yyx990803', 'sindresorhus', 'tj', 'addyosmani', 
@@ -28,10 +76,13 @@ export const fetchUser = async (username: string): Promise<CardData | null> => {
   }
 };
 
-export const generateDeck = async (count: number = 10): Promise<CardData[]> => {
-  // Shuffle fallback users
-  const shuffled = [...FALLBACK_USERS].sort(() => 0.5 - Math.random());
-  const selected = shuffled.slice(0, count * 2); // Fetch enough for 2 players
+export const generateDeck = async (count: number = 10, deckType: DeckType = 'Standard'): Promise<CardData[]> => {
+  // Use deck-specific users
+  const userList = DECK_CONFIGS[deckType].users;
+  
+  // Shuffle selected users
+  const shuffled = [...userList].sort(() => 0.5 - Math.random());
+  const selected = shuffled.slice(0, Math.min(count * 2, userList.length));
   
   const promises = selected.map(u => fetchUser(u));
   const results = await Promise.all(promises);
