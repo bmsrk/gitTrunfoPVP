@@ -750,78 +750,78 @@ const App: React.FC = () => {
     const hasSelectedDeck = gameState.selectedDeck !== null;
     
     return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-4 space-y-4 md:space-y-6 w-full max-w-4xl lg:max-w-6xl mx-auto relative">
+    <div className="flex flex-col items-center justify-center min-h-screen p-4 space-y-8 md:space-y-12 w-full max-w-4xl lg:max-w-6xl mx-auto relative">
       
-      {/* Top Bar Controls - More compact */}
-      <div className="absolute top-2 md:top-4 right-2 md:right-4 flex gap-2 md:gap-4">
+      {/* Top Bar Controls */}
+      <div className="absolute top-4 right-4 flex gap-4">
          <button 
            onClick={() => { soundManager.playSelect(); setShowSettings(true); }}
-           className="bg-theme-panel border-2 border-theme-border p-1.5 md:p-2 rounded-theme hover:border-theme-primary hover:text-theme-primary transition-all group shadow-theme"
+           className="bg-theme-panel border-2 border-theme-border p-2 md:p-3 rounded-theme hover:border-theme-primary hover:text-theme-primary transition-all group shadow-theme"
            title="Settings"
          >
-           <div className="flex items-center gap-1 md:gap-2">
-             <Settings className="w-5 h-5 md:w-6 md:h-6 lg:w-7 lg:h-7" />
-             <span className="font-pixel text-[10px] lg:text-sm hidden group-hover:block uppercase">SETTINGS</span>
+           <div className="flex items-center gap-2">
+             <Settings className="w-6 h-6 lg:w-8 lg:h-8" />
+             <span className="font-pixel text-xs lg:text-lg hidden group-hover:block uppercase">SETTINGS</span>
            </div>
          </button>
 
          <button 
            onClick={() => { soundManager.playSelect(); setShowTutorial(true); }}
-           className="bg-theme-panel border-2 border-theme-border p-1.5 md:p-2 rounded-theme hover:border-theme-primary hover:text-theme-primary transition-all group shadow-theme"
+           className="bg-theme-panel border-2 border-theme-border p-2 md:p-3 rounded-theme hover:border-theme-primary hover:text-theme-primary transition-all group shadow-theme"
          >
-           <div className="flex items-center gap-1 md:gap-2">
-             <span className="font-pixel text-[10px] lg:text-sm hidden group-hover:block">RULES</span>
-             <HelpCircle className="w-5 h-5 md:w-6 md:h-6 lg:w-7 lg:h-7" />
+           <div className="flex items-center gap-2">
+             <span className="font-pixel text-xs lg:text-lg hidden group-hover:block">RULES</span>
+             <HelpCircle className="w-6 h-6 lg:w-8 lg:h-8" />
            </div>
          </button>
       </div>
 
       {/* Error Banner */}
       {connectionError && (
-          <div className="absolute top-16 md:top-20 left-1/2 -translate-x-1/2 w-full max-w-xl px-4 animate-bounce z-50">
-              <div className="bg-theme-danger text-theme-bg p-3 border-2 md:border-4 border-theme-border shadow-theme rounded-theme flex items-center justify-center gap-2 md:gap-3">
-                  <AlertTriangle className="w-5 h-5 md:w-6 md:h-6" />
-                  <span className="font-pixel text-[10px] md:text-xs lg:text-sm text-center uppercase">{connectionError}</span>
+          <div className="absolute top-20 left-1/2 -translate-x-1/2 w-full max-w-xl px-4 animate-bounce z-50">
+              <div className="bg-theme-danger text-theme-bg p-4 border-4 border-theme-border shadow-theme rounded-theme flex items-center justify-center gap-3">
+                  <AlertTriangle className="w-6 h-6" />
+                  <span className="font-pixel text-xs md:text-sm lg:text-base text-center uppercase">{connectionError}</span>
               </div>
           </div>
       )}
 
-      <div className="text-center space-y-2 md:space-y-4 lg:space-y-6 mt-16 md:mt-12">
-        <div className="inline-block p-3 md:p-4 lg:p-6 border-2 md:border-4 border-theme-primary bg-theme-bg shadow-theme rounded-theme">
-             <Trophy className="text-theme-primary drop-shadow-[0_0_10px_rgba(255,255,255,0.5)] w-10 h-10 md:w-12 md:h-12 2xl:w-24 2xl:h-24" />
+      <div className="text-center space-y-4 md:space-y-6 lg:space-y-10 mt-12 md:mt-0">
+        <div className="inline-block p-4 md:p-6 lg:p-8 border-4 border-theme-primary bg-theme-bg shadow-theme rounded-theme animate-bounce">
+             <Trophy className="text-theme-primary drop-shadow-[0_0_10px_rgba(255,255,255,0.5)] w-12 h-12 md:w-16 md:h-16 2xl:w-32 2xl:h-32" />
         </div>
         
-        <h1 className="text-3xl md:text-6xl lg:text-7xl font-pixel tracking-tighter text-theme-text drop-shadow-[4px_4px_0_var(--shadow)] flex flex-col md:flex-row items-center justify-center gap-2 md:gap-4 text-glow leading-none">
+        <h1 className="text-4xl md:text-8xl lg:text-8xl font-pixel tracking-tighter text-theme-text drop-shadow-[4px_4px_0_var(--shadow)] flex flex-col md:flex-row items-center justify-center gap-4 text-glow leading-none">
           GitTrunfo
-          <span className="bg-theme-accent text-theme-bg px-3 py-1 text-xl md:text-4xl lg:text-4xl -rotate-6 border-2 md:border-4 border-white shadow-lg rounded-theme">
+          <span className="bg-theme-accent text-theme-bg px-4 py-1 text-2xl md:text-5xl lg:text-5xl -rotate-6 border-4 border-white shadow-lg rounded-theme">
             PVP
           </span>
         </h1>
         
-        <p className="font-retro text-base md:text-xl lg:text-2xl text-theme-muted tracking-widest uppercase text-glow">
+        <p className="font-retro text-lg md:text-2xl lg:text-3xl text-theme-muted tracking-widest uppercase text-glow">
           {'>> Insert Coin to Initialize P2P Battle'}
         </p>
       </div>
 
       {/* Game Mode Selection */}
-      <div className="w-full max-w-xl lg:max-w-3xl bg-theme-bg p-1 border-2 md:border-4 border-theme-border shadow-theme rounded-theme mx-4">
-        <div className="bg-theme-panel p-3 md:p-4 flex flex-col gap-2 md:gap-3 rounded-[calc(var(--radius)-4px)]">
-            <h3 className="font-pixel text-[10px] md:text-xs lg:text-base text-theme-text flex items-center gap-1.5 md:gap-2">
-              <Gamepad2 size={14} className="2xl:w-5 2xl:h-5" /> GAME_MODE:
+      <div className="w-full max-w-xl lg:max-w-3xl bg-theme-bg p-1 border-4 border-theme-border shadow-theme rounded-theme mx-4">
+        <div className="bg-theme-panel p-4 md:p-6 flex flex-col gap-4 rounded-[calc(var(--radius)-4px)]">
+            <h3 className="font-pixel text-xs md:text-sm lg:text-lg text-theme-text flex items-center gap-2">
+              <Gamepad2 size={16} className="2xl:w-6 2xl:h-6" /> GAME_MODE:
             </h3>
-            <div className="grid grid-cols-2 gap-2 md:gap-3">
+            <div className="grid grid-cols-2 gap-4">
               <button
                 onClick={() => {
                   soundManager.playSelect();
                   setGameState(prev => ({ ...prev, gameMode: 'CASUAL' }));
                 }}
-                className={`p-3 border-2 md:border-4 transition-all rounded-theme ${
+                className={`p-4 border-4 transition-all rounded-theme ${
                   gameState.gameMode === 'CASUAL'
                     ? 'border-theme-primary bg-theme-primary/20 shadow-glow'
                     : 'border-theme-border bg-theme-bg hover:border-theme-text'
                 }`}
               >
-                <span className={`font-pixel text-[10px] md:text-xs lg:text-base uppercase ${gameState.gameMode === 'CASUAL' ? 'text-theme-primary' : 'text-theme-muted'}`}>
+                <span className={`font-pixel text-xs md:text-sm lg:text-lg uppercase ${gameState.gameMode === 'CASUAL' ? 'text-theme-primary' : 'text-theme-muted'}`}>
                   Casual
                 </span>
               </button>
@@ -830,13 +830,13 @@ const App: React.FC = () => {
                   soundManager.playSelect();
                   setGameState(prev => ({ ...prev, gameMode: 'TOURNAMENT' }));
                 }}
-                className={`p-3 border-2 md:border-4 transition-all rounded-theme ${
+                className={`p-4 border-4 transition-all rounded-theme ${
                   gameState.gameMode === 'TOURNAMENT'
                     ? 'border-theme-primary bg-theme-primary/20 shadow-glow'
                     : 'border-theme-border bg-theme-bg hover:border-theme-text'
                 }`}
               >
-                <span className={`font-pixel text-[10px] md:text-xs lg:text-base uppercase ${gameState.gameMode === 'TOURNAMENT' ? 'text-theme-primary' : 'text-theme-muted'}`}>
+                <span className={`font-pixel text-xs md:text-sm lg:text-lg uppercase ${gameState.gameMode === 'TOURNAMENT' ? 'text-theme-primary' : 'text-theme-muted'}`}>
                   Tournament
                 </span>
               </button>
@@ -845,20 +845,20 @@ const App: React.FC = () => {
       </div>
 
       {/* Deck Selection Display */}
-      <div className="w-full max-w-xl lg:max-w-3xl bg-theme-bg p-1 border-2 md:border-4 border-theme-border shadow-theme rounded-theme mx-4">
-        <div className="bg-theme-panel p-3 md:p-4 flex flex-col gap-2 md:gap-3 rounded-[calc(var(--radius)-4px)]">
-            <h3 className="font-pixel text-[10px] md:text-xs lg:text-base text-theme-text flex items-center gap-1.5 md:gap-2">
-              <Layers size={14} className="2xl:w-5 2xl:h-5" /> SELECTED_DECK:
+      <div className="w-full max-w-xl lg:max-w-3xl bg-theme-bg p-1 border-4 border-theme-border shadow-theme rounded-theme mx-4">
+        <div className="bg-theme-panel p-4 md:p-6 flex flex-col gap-4 rounded-[calc(var(--radius)-4px)]">
+            <h3 className="font-pixel text-xs md:text-sm lg:text-lg text-theme-text flex items-center gap-2">
+              <Layers size={16} className="2xl:w-6 2xl:h-6" /> SELECTED_DECK:
             </h3>
             {hasSelectedDeck ? (
-              <div className="flex items-center justify-between p-3 bg-theme-bg border-2 border-theme-primary rounded-theme">
-                <div className="flex items-center gap-2 md:gap-3">
-                  <span className="text-2xl md:text-3xl">{gameState.selectedDeck ? DECK_CONFIGS[gameState.selectedDeck].icon : '⭐'}</span>
+              <div className="flex items-center justify-between p-4 bg-theme-bg border-2 border-theme-primary rounded-theme">
+                <div className="flex items-center gap-3">
+                  <span className="text-3xl">{gameState.selectedDeck ? DECK_CONFIGS[gameState.selectedDeck].icon : '⭐'}</span>
                   <div>
-                    <p className="font-pixel text-xs md:text-sm lg:text-base text-theme-primary">
+                    <p className="font-pixel text-sm md:text-base lg:text-lg text-theme-primary">
                       {gameState.selectedDeck ? DECK_CONFIGS[gameState.selectedDeck].name : 'Unknown'}
                     </p>
-                    <p className="font-retro text-[10px] md:text-xs lg:text-sm text-theme-muted">
+                    <p className="font-retro text-xs md:text-sm lg:text-base text-theme-muted">
                       {gameState.selectedDeck ? DECK_CONFIGS[gameState.selectedDeck].description : ''}
                     </p>
                   </div>
@@ -868,7 +868,7 @@ const App: React.FC = () => {
                     soundManager.playSelect();
                     setGameState(prev => ({ ...prev, status: 'DECK_SELECT' }));
                   }}
-                  className="bg-theme-primary text-theme-bg font-pixel px-3 py-1.5 md:px-4 md:py-2 lg:text-base text-xs rounded-theme hover:bg-theme-text hover:text-theme-primary transition-colors"
+                  className="bg-theme-primary text-theme-bg font-pixel px-4 py-2 lg:px-5 2xl:py-3 lg:text-lg rounded-theme hover:bg-theme-text hover:text-theme-primary transition-colors"
                 >
                   CHANGE
                 </button>
@@ -879,9 +879,9 @@ const App: React.FC = () => {
                   soundManager.playSelect();
                   setGameState(prev => ({ ...prev, status: 'DECK_SELECT' }));
                 }}
-                className="p-3 bg-theme-bg border-2 border-dashed border-theme-border hover:border-theme-primary rounded-theme transition-all"
+                className="p-4 bg-theme-bg border-2 border-dashed border-theme-border hover:border-theme-primary rounded-theme transition-all"
               >
-                <span className="font-pixel text-xs md:text-sm lg:text-base text-theme-muted hover:text-theme-primary">
+                <span className="font-pixel text-sm md:text-base lg:text-lg text-theme-muted hover:text-theme-primary">
                   {'>> CLICK TO SELECT DECK <<'}
                 </span>
               </button>
@@ -889,23 +889,23 @@ const App: React.FC = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-6 w-full px-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 w-full px-4">
         <button 
              onClick={hasSelectedDeck ? startSinglePlayer : undefined}
              onPointerEnter={() => hasSelectedDeck && soundManager.playHover()}
              disabled={!hasSelectedDeck}
-             className={`group relative bg-theme-panel p-4 md:p-6 lg:p-8 border-2 md:border-4 border-theme-border transition-all shadow-theme text-left rounded-theme ${
+             className={`group relative bg-theme-panel p-6 md:p-8 lg:p-12 border-4 border-theme-border transition-all shadow-theme text-left rounded-theme ${
                hasSelectedDeck 
                  ? 'hover:border-theme-primary active:translate-y-2 hover:shadow-glow cursor-pointer' 
                  : 'opacity-50 cursor-not-allowed'
              }`}
         >
-          <div className="absolute top-0 left-0 bg-theme-primary text-theme-bg font-pixel text-[9px] md:text-[10px] lg:text-sm px-1.5 py-0.5 md:px-2 md:py-1 rounded-tl-[calc(var(--radius)-4px)]">1 PLAYER</div>
-          <div className="flex items-center gap-3 md:gap-4 mb-1 md:mb-2 mt-1">
-             <Cpu className={`text-theme-primary ${hasSelectedDeck ? 'group-hover:scale-110' : ''} transition-transform w-8 h-8 md:w-10 md:h-10 2xl:w-20 2xl:h-20`} />
+          <div className="absolute top-0 left-0 bg-theme-primary text-theme-bg font-pixel text-[10px] md:text-xs lg:text-lg px-2 py-1 rounded-tl-[calc(var(--radius)-4px)]">1 PLAYER</div>
+          <div className="flex items-center gap-4 md:gap-6 mb-2 md:mb-4 mt-2">
+             <Cpu className={`text-theme-primary ${hasSelectedDeck ? 'group-hover:scale-110' : ''} transition-transform w-10 h-10 md:w-12 md:h-12 2xl:w-24 2xl:h-24`} />
              <div>
-               <h3 className="text-lg md:text-xl lg:text-3xl font-pixel text-theme-text mb-0.5">VS CPU</h3>
-               <p className="font-retro text-sm md:text-base lg:text-lg text-theme-muted">TRAINING_MODE.EXE</p>
+               <h3 className="text-xl md:text-2xl lg:text-4xl font-pixel text-theme-text mb-1">VS CPU</h3>
+               <p className="font-retro text-base md:text-lg lg:text-xl text-theme-muted">TRAINING_MODE.EXE</p>
              </div>
           </div>
         </button>
@@ -914,33 +914,33 @@ const App: React.FC = () => {
              onClick={hasSelectedDeck ? initHost : undefined}
              onPointerEnter={() => hasSelectedDeck && soundManager.playHover()}
              disabled={!hasSelectedDeck}
-             className={`group relative bg-theme-panel p-4 md:p-6 lg:p-8 border-2 md:border-4 border-theme-border transition-all shadow-theme text-left rounded-theme ${
+             className={`group relative bg-theme-panel p-6 md:p-8 lg:p-12 border-4 border-theme-border transition-all shadow-theme text-left rounded-theme ${
                hasSelectedDeck 
                  ? 'hover:border-theme-success active:translate-y-2 hover:shadow-[0_0_15px_var(--success)] cursor-pointer' 
                  : 'opacity-50 cursor-not-allowed'
              }`}
         >
-          <div className="absolute top-0 left-0 bg-theme-success text-theme-bg font-pixel text-[9px] md:text-[10px] lg:text-sm px-1.5 py-0.5 md:px-2 md:py-1 rounded-tl-[calc(var(--radius)-4px)]">2 PLAYER</div>
-          <div className="flex items-center gap-3 md:gap-4 mb-1 md:mb-2 mt-1">
-             <Wifi className={`text-theme-success ${hasSelectedDeck ? 'group-hover:scale-110' : ''} transition-transform w-8 h-8 md:w-10 md:h-10 2xl:w-20 2xl:h-20`} />
+          <div className="absolute top-0 left-0 bg-theme-success text-theme-bg font-pixel text-[10px] md:text-xs lg:text-lg px-2 py-1 rounded-tl-[calc(var(--radius)-4px)]">2 PLAYER</div>
+          <div className="flex items-center gap-4 md:gap-6 mb-2 md:mb-4 mt-2">
+             <Wifi className={`text-theme-success ${hasSelectedDeck ? 'group-hover:scale-110' : ''} transition-transform w-10 h-10 md:w-12 md:h-12 2xl:w-24 2xl:h-24`} />
              <div>
-               <h3 className="text-lg md:text-xl lg:text-3xl font-pixel text-theme-text mb-0.5">HOST GAME</h3>
-               <p className="font-retro text-sm md:text-base lg:text-lg text-theme-muted">CREATE_LOBBY.BAT</p>
+               <h3 className="text-xl md:text-2xl lg:text-4xl font-pixel text-theme-text mb-1">HOST GAME</h3>
+               <p className="font-retro text-base md:text-lg lg:text-xl text-theme-muted">CREATE_LOBBY.BAT</p>
              </div>
           </div>
         </button>
       </div>
 
-      <div className="w-full max-w-xl lg:max-w-3xl bg-theme-bg p-1 border-2 md:border-4 border-theme-border shadow-theme rounded-theme mx-4">
-        <div className="bg-theme-panel p-3 md:p-4 flex flex-col gap-2 md:gap-3 rounded-[calc(var(--radius)-4px)]">
-            <h3 className="font-pixel text-[10px] md:text-xs lg:text-base text-theme-text flex items-center gap-1.5 md:gap-2">
-              <User size={14} className="2xl:w-5 2xl:h-5" /> JOIN_EXISTING_LOBBY:
+      <div className="w-full max-w-xl lg:max-w-3xl bg-theme-bg p-1 border-4 border-theme-border shadow-theme rounded-theme mx-4">
+        <div className="bg-theme-panel p-4 md:p-6 flex flex-col gap-4 rounded-[calc(var(--radius)-4px)]">
+            <h3 className="font-pixel text-xs md:text-sm lg:text-lg text-theme-text flex items-center gap-2">
+              <User size={16} className="2xl:w-6 2xl:h-6" /> JOIN_EXISTING_LOBBY:
             </h3>
             <div className="flex gap-0">
               <input 
                 type="text" 
                 placeholder="PASTE_LOBBY_ID_HERE..." 
-                className="flex-1 bg-theme-bg border-2 border-r-0 border-theme-border p-2 md:p-3 font-retro text-base md:text-lg lg:text-xl text-theme-text focus:outline-none focus:border-theme-primary focus:border-r-2 placeholder:text-theme-muted/50 rounded-l-theme min-w-0"
+                className="flex-1 bg-theme-bg border-2 border-r-0 border-theme-border p-3 md:p-4 font-retro text-lg md:text-xl lg:text-2xl text-theme-text focus:outline-none focus:border-theme-primary focus:border-r-2 placeholder:text-theme-muted/50 rounded-l-theme min-w-0"
                 value={inputPeerId}
                 onChange={(e) => setInputPeerId(e.target.value)}
                 disabled={!hasSelectedDeck}
@@ -948,7 +948,7 @@ const App: React.FC = () => {
               <button 
                 onClick={hasSelectedDeck ? connectToPeer : undefined}
                 disabled={!hasSelectedDeck}
-                className={`bg-theme-primary text-theme-bg font-pixel font-bold px-3 md:px-6 lg:px-8 text-xs md:text-base lg:text-lg border-2 border-theme-primary rounded-r-theme ${
+                className={`bg-theme-primary text-theme-bg font-pixel font-bold px-4 md:px-8 lg:px-10 lg:text-xl border-2 border-theme-primary rounded-r-theme ${
                   hasSelectedDeck ? 'hover:bg-theme-text hover:text-theme-primary' : 'opacity-50 cursor-not-allowed'
                 } transition-colors`}
               >
@@ -959,18 +959,18 @@ const App: React.FC = () => {
       </div>
       
       {gameState.peerId && (
-        <div className="w-full max-w-xl lg:max-w-3xl border-2 md:border-4 border-dashed border-theme-primary/50 p-4 md:p-5 bg-theme-primary/10 flex flex-col items-center animate-fade-in text-center rounded-theme mx-4">
-           <p className="font-pixel text-[10px] lg:text-sm text-theme-primary mb-1.5 md:mb-2 text-glow">{'>> YOUR_LOBBY_COORDINATES:'}</p>
-           <div className="flex items-center gap-1.5 md:gap-2 w-full justify-center bg-theme-bg border-2 border-theme-primary/30 p-2.5 md:p-3 mb-1.5 cursor-pointer hover:bg-theme-bg/80 rounded-theme shadow-theme"
+        <div className="w-full max-w-xl lg:max-w-3xl border-4 border-dashed border-theme-primary/50 p-6 bg-theme-primary/10 flex flex-col items-center animate-fade-in text-center rounded-theme mx-4">
+           <p className="font-pixel text-xs lg:text-base text-theme-primary mb-2 text-glow">{'>> YOUR_LOBBY_COORDINATES:'}</p>
+           <div className="flex items-center gap-2 w-full justify-center bg-theme-bg border-2 border-theme-primary/30 p-4 mb-2 cursor-pointer hover:bg-theme-bg/80 rounded-theme shadow-theme"
                 onClick={() => { navigator.clipboard.writeText(gameState.peerId!); soundManager.playSelect(); }}>
-              <code className="text-theme-primary font-retro text-xs md:text-lg lg:text-xl truncate break-all">{gameState.peerId}</code>
-              <Copy size={14} className="text-theme-primary shrink-0 md:w-4 md:h-4 2xl:w-5 2xl:h-5" />
+              <code className="text-theme-primary font-retro text-sm md:text-xl lg:text-2xl truncate break-all">{gameState.peerId}</code>
+              <Copy size={16} className="text-theme-primary shrink-0 2xl:w-6 2xl:h-6" />
            </div>
-           <p className="font-retro text-[10px] md:text-sm lg:text-base text-theme-primary/60 animate-pulse">WAITING_FOR_CHALLENGER...</p>
+           <p className="font-retro text-theme-primary/60 animate-pulse lg:text-lg">WAITING_FOR_CHALLENGER...</p>
         </div>
       )}
       
-      <div className="font-retro text-theme-muted/40 text-[10px] md:text-xs lg:text-base">v.2.1.0 THEME_ENGINE // {theme.toUpperCase()}</div>
+      <div className="font-retro text-theme-muted/40 text-xs md:text-sm lg:text-lg">v.2.1.0 THEME_ENGINE // {theme.toUpperCase()}</div>
     </div>
     );
   };
@@ -1059,8 +1059,8 @@ const App: React.FC = () => {
 
     return (
       <div className="min-h-screen flex flex-col p-2 md:p-3 max-w-7xl 2xl:max-w-[120rem] mx-auto overflow-hidden md:overflow-visible">
-         {/* HUD - Compact version for better vertical space */}
-         <div className="flex flex-row md:flex-row justify-between items-start md:items-center mb-2 md:mb-4 border-b-2 md:border-b-4 border-theme-border pb-1.5 md:pb-3 bg-theme-bg/90 sticky top-0 z-50 backdrop-blur-sm px-2 md:px-3 rounded-b-theme shadow-theme">
+         {/* HUD - Compact version */}
+         <div className="flex flex-row md:flex-row justify-between items-start md:items-center mb-2 md:mb-6 border-b-2 md:border-b-4 border-theme-border pb-1.5 md:pb-4 bg-theme-bg/90 sticky top-0 z-50 backdrop-blur-sm px-2 md:px-3 rounded-b-theme shadow-theme">
             {/* Player 1 Status */}
             <div className="flex flex-col md:flex-row items-start md:items-center gap-1.5 md:gap-4 w-1/3 md:w-auto">
                <div className="flex items-center gap-1.5">
@@ -1140,7 +1140,7 @@ const App: React.FC = () => {
              </button>
          </div>
 
-         {/* Battle Arena - Reduced spacing */}
+         {/* Battle Arena - Compact spacing */}
          <div className="flex-1 flex flex-col md:flex-row items-center justify-start md:justify-center gap-3 md:gap-8 lg:gap-12 relative py-2 md:py-4 min-h-0">
             {/* Opponent Card (Top on Mobile) */}
             <div className="relative z-10 order-1 md:order-3">
@@ -1206,7 +1206,7 @@ const App: React.FC = () => {
             </div>
          </div>
 
-         {/* Commentary Box / Terminal Log - More compact */}
+         {/* Commentary Box / Terminal Log - Compact */}
          {/* Desktop Log */}
          <div className="hidden md:flex mt-3 lg:mt-6 mb-2 justify-center">
             <div className="w-full max-w-3xl 2xl:max-w-5xl bg-theme-bg border-2 md:border-4 border-theme-border p-1 shadow-theme rounded-theme">
