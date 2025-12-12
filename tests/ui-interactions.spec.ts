@@ -14,10 +14,10 @@ test.describe('Card Interaction Tests', () => {
     if (box) {
       await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
       
-      // Give brief moment for CSS transition
-      await page.waitForTimeout(500);
+      // Wait for any network activity from hover to settle
+      await page.waitForLoadState('networkidle');
       
-      // Check if transform is applied
+      // Check if transform is applied (cards have CSS transform on hover)
       const hoverTransform = await card.evaluate(el => 
         window.getComputedStyle(el).transform
       );

@@ -8,6 +8,7 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: 'html',
   use: {
+    // Note: App is served at /gitTrunfoPVP/ path (configured in vite.config.ts)
     baseURL: process.env.BASE_URL || 'http://localhost:3000/gitTrunfoPVP',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
