@@ -9,16 +9,13 @@ test.describe('Card Interaction Tests', () => {
     const card = page.locator('.card-3d-tilt').first();
     await expect(card).toBeVisible();
     
-    // Get initial transform
-    const initialTransform = await card.evaluate(el => 
-      window.getComputedStyle(el).transform
-    );
-    
-    // Move mouse to center of card
+    // Move mouse to center of card to trigger hover
     const box = await card.boundingBox();
     if (box) {
       await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
-      await page.waitForTimeout(300);
+      
+      // Give brief moment for CSS transition
+      await page.waitForTimeout(500);
       
       // Check if transform is applied
       const hoverTransform = await card.evaluate(el => 
@@ -62,8 +59,8 @@ test.describe('Event Handling Tests', () => {
     const statButton = page.locator('button:has-text("FOLLOWERS")').first();
     await statButton.click();
     
-    // Game should progress (turn changes or stays depending on game state)
-    await page.waitForTimeout(1500);
+    // Wait a reasonable time for turn processing
+    await page.waitForTimeout(2000);
     
     // Verify game didn't crash and some turn state exists
     const turnState = await getCurrentTurn(page);
@@ -78,7 +75,9 @@ test.describe('Event Handling Tests', () => {
     // Hover over stat button without clicking
     const statButton = page.locator('button:has-text("REPOS")').first();
     await statButton.hover();
-    await page.waitForTimeout(500);
+    
+    // Give slight delay to ensure no action is triggered
+    await page.waitForLoadState('networkidle');
     
     // Verify turn hasn't changed (no action triggered)
     const turnAfterHover = await page.locator('text=YOUR TURN').isVisible();
@@ -88,11 +87,7 @@ test.describe('Event Handling Tests', () => {
   test('clicking disabled elements does not cause errors', async ({ page }) => {
     await setupGame(page);
     
-    // Try clicking various UI elements
-    await page.click('body');
-    await page.waitForTimeout(200);
-    
-    // Verify no console errors occurred
+    // Setup console error listener before clicking
     const consoleErrors: string[] = [];
     page.on('console', msg => {
       if (msg.type() === 'error') {
@@ -100,9 +95,18 @@ test.describe('Event Handling Tests', () => {
       }
     });
     
+    // Try clicking various UI elements
+    await page.click('body');
+    
+    // Wait for any async operations to complete
+    await page.waitForLoadState('networkidle');
+    
     // Page should still be functional - check for turn indicator
     const turnState = await getCurrentTurn(page);
     expect(turnState).not.toBeNull();
+    
+    // Verify no console errors occurred
+    expect(consoleErrors.length).toBe(0);
   });
 });
 
@@ -130,6 +134,8 @@ test.describe('UI State Management', () => {
     // After clicking a stat, turn indicator should still exist (even if it changes)
     const statButton = page.locator('button:has-text("FOLLOWERS")').first();
     await statButton.click();
+    
+    // Wait for turn to process
     await page.waitForTimeout(2000);
     
     // Some turn indicator should be present
@@ -168,7 +174,9 @@ test.describe('Visual Effects', () => {
     
     // Hover over button
     await statButton.hover();
-    await page.waitForTimeout(200);
+    
+    // Wait for any CSS transitions to apply
+    await page.waitForLoadState('networkidle');
     
     // Button should still be visible and functional
     await expect(statButton).toBeVisible();
@@ -181,7 +189,9 @@ test.describe('Accessibility', () => {
     
     // Try tabbing through elements (basic keyboard navigation check)
     await page.keyboard.press('Tab');
-    await page.waitForTimeout(100);
+    
+    // Wait for focus to change
+    await page.waitForLoadState('networkidle');
     
     // Verify page is still functional
     await expect(page.locator('text=YOUR TURN')).toBeVisible();

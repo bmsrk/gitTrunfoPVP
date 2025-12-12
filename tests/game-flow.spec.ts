@@ -80,7 +80,7 @@ test.describe('Game Flow Tests', () => {
     const statButton = page.locator('button:has-text("FOLLOWERS")').first();
     await statButton.click();
     
-    // Wait for turn to process (either remains YOUR TURN or switches to OPPONENT TURN)
+    // Wait for turn to process
     await page.waitForTimeout(2000);
     
     // Verify game state has progressed (some turn indicator should be visible)

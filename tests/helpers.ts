@@ -68,8 +68,7 @@ export async function closeSettings(page: Page): Promise<void> {
  */
 export async function selectTheme(page: Page, theme: Theme): Promise<void> {
   await page.click(`button:has-text("${theme}")`);
-  // Give a brief moment for theme to apply
-  await page.waitForTimeout(200);
+  // Theme should apply immediately - no need for timeout
 }
 
 /**
